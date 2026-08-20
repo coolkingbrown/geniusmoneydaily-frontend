@@ -15,6 +15,7 @@ export default function Header() {
     { name: "Savings", href: "/category/savings" },
     { name: "Real Estate", href: "/category/real-estate" },
     { name: "Taxes", href: "/category/taxes" },
+    { name: "Lifestyle", href: "/category/lifestyle" },
   ];
 
   return (
@@ -43,7 +44,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Left-Aligned Logo Placeholder */}
+          {/* Left-Aligned Logo (Without .com) */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-lg bg-brand-navy flex items-center justify-center text-brand-teal font-black text-xl shadow-md group-hover:bg-brand-navy-light transition-colors">
               G
@@ -56,7 +57,6 @@ export default function Header() {
                 <span className="font-extrabold text-2xl tracking-tight text-brand-teal">
                   Daily
                 </span>
-                <span className="text-xs font-semibold text-slate-400 ml-0.5">.com</span>
               </div>
               <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
                 High-Authority Financial Hub
@@ -91,7 +91,7 @@ export default function Header() {
               href="/signup"
               className="bg-brand-navy hover:bg-brand-navy-light text-white text-xs uppercase tracking-wider font-bold px-4 py-2.5 rounded-lg border border-brand-navy shadow-sm transition-all hover:shadow flex items-center gap-1.5"
             >
-              <span>Get Free Plan</span>
+              <span>Get Your Free Offers</span>
               <ChevronRight className="w-3.5 h-3.5 text-brand-teal" />
             </Link>
           </div>
@@ -156,7 +156,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="w-full bg-brand-navy text-white text-center font-bold px-4 py-3 rounded-lg block"
             >
-              Get Your Free Financial Plan
+              Get Your Free Offers
             </Link>
           </div>
         </div>

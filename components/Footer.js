@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, Lock, ExternalLink, ArrowUpRight } from "lucide-react";
+import { ShieldCheck, Lock, ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -24,7 +24,6 @@ export default function Footer() {
                 <span className="font-extrabold text-xl tracking-tight text-brand-teal">
                   Daily
                 </span>
-                <span className="text-xs font-semibold text-slate-400 ml-0.5">.com</span>
               </div>
             </Link>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
@@ -72,6 +71,11 @@ export default function Footer() {
                   Tax Planning & Wealth
                 </Link>
               </li>
+              <li>
+                <Link href="/category/lifestyle" className="hover:text-white transition-colors">
+                  Lifestyle & Wellness
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -83,7 +87,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-slate-400 font-medium">
               <li>
                 <Link href="/signup" className="hover:text-white transition-colors flex items-center gap-1">
-                  <span>Free Financial Plan</span>
+                  <span>Get Your Free Offers</span>
                   <ArrowUpRight className="w-3 h-3 text-brand-teal" />
                 </Link>
               </li>
@@ -147,7 +151,7 @@ export default function Footer() {
             <ShieldCheck className="w-4 h-4 text-brand-teal" /> Regulatory Disclaimer & Transparency Statement
           </p>
           <p className="leading-relaxed">
-            GeniusMoneyDaily.com is an independent publisher and comparison service. The information provided across our articles, calculators, and rate tables is for informational and educational purposes only and does not constitute financial, investment, legal, or tax advice. 
+            GeniusMoneyDaily is an independent publisher and comparison service. The information provided across our articles, calculators, and rate tables is for informational and educational purposes only and does not constitute financial, investment, legal, or tax advice. 
           </p>
           <p className="font-semibold text-brand-teal">
             Disclaimer: Not affiliated with any state or federal government agency.
@@ -156,7 +160,7 @@ export default function Footer() {
 
         {/* Bottom Bar (Copyright & Legal) */}
         <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pt-4 gap-4">
-          <p>© {currentYear} GeniusMoneyDaily.com. All rights reserved.</p>
+          <p>© {currentYear} GeniusMoneyDaily. All rights reserved.</p>
           <div className="flex items-center space-x-6">
             <Link href="/privacy" className="hover:text-slate-300 transition-colors">
               Privacy

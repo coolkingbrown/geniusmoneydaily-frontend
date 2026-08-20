@@ -128,13 +128,16 @@ export default function MagazineGrid({ articles = [] }) {
             <Link href="/category/taxes" className="px-3 py-1.5 hover:bg-slate-200 rounded-full transition-colors">
               Taxes
             </Link>
+            <Link href="/category/lifestyle" className="px-3 py-1.5 hover:bg-slate-200 rounded-full transition-colors">
+              Lifestyle
+            </Link>
           </div>
         </div>
 
         {/* 3-Column News Hub Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* LEFT COLUMN: Top Stories (Mapped from articles[1..2]) */}
+          {/* LEFT COLUMN: Top Stories */}
           <div className="lg:col-span-3 space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-300">
               <h3 className="text-sm font-extrabold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">
@@ -183,7 +186,7 @@ export default function MagazineGrid({ articles = [] }) {
             </div>
           </div>
 
-          {/* CENTER COLUMN: Featured Article (Mapped from articles[0]) */}
+          {/* CENTER COLUMN: Featured Article */}
           <div className="lg:col-span-6">
             <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col group">
               <div className="relative h-72 sm:h-96 w-full overflow-hidden bg-slate-900">
@@ -251,7 +254,7 @@ export default function MagazineGrid({ articles = [] }) {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Trending Briefs (Mapped from articles[3..5]) */}
+          {/* RIGHT COLUMN: Trending Briefs */}
           <div className="lg:col-span-3 space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-300">
               <h3 className="text-sm font-extrabold text-brand-navy uppercase tracking-wider flex items-center gap-1.5">

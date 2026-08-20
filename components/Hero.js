@@ -36,7 +36,7 @@ export default function Hero() {
               href="/signup"
               className="w-full sm:w-auto inline-flex items-center justify-center bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold text-base px-8 py-4 rounded-xl shadow-teal hover-glow transition-all duration-200 gap-2 border border-brand-teal/20 group"
             >
-              <span>Get Your Free Financial Plan</span>
+              <span>Get Your Free Offers</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>

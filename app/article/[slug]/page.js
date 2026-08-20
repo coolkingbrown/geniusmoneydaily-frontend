@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, ArrowLeft, Share2, Bookmark, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { Clock, ArrowLeft } from "lucide-react";
 import { fetchArticleBySlug } from "@/lib/fetchArticles";
 
 export async function generateMetadata({ params }) {
   const article = await fetchArticleBySlug(params.slug);
   return {
-    title: `${article.title} | GeniusMoneyDaily.com`,
+    title: `${article.title} | GeniusMoneyDaily`,
     description: article.excerpt || "High-authority financial publication & daily insights.",
   };
 }
@@ -116,7 +116,7 @@ export default async function ArticlePage({ params }) {
                 href="/signup"
                 className="inline-flex items-center justify-center bg-brand-teal hover:bg-brand-teal-hover text-white font-extrabold px-6 py-3 rounded-xl transition-all text-sm"
               >
-                Get Your Free Financial Plan
+                Get Your Free Offers
               </Link>
             </div>
           </div>
