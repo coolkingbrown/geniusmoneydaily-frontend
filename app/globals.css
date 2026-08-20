@@ -1,0 +1,36 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --color-teal: #00D29F;
+  --color-navy: #1A2045;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans selection:bg-brand-teal selection:text-brand-navy-dark;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold text-slate-900;
+  }
+}
+
+/* Custom Financial Magazine Accents */
+.badge-teal {
+  @apply bg-brand-teal/15 text-emerald-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider border border-brand-teal/30;
+}
+
+.badge-navy {
+  @apply bg-brand-navy text-white text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider;
+}
+
+.hover-glow {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 210, 159, 0.25);
+  transform: translateY(-2px);
+}
