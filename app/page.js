@@ -1,12 +1,12 @@
 import Hero from "@/components/Hero";
 import MagazineGrid from "@/components/MagazineGrid";
-import { fetchPublishedArticles } from "@/lib/fetchArticles";
+import { getGeniusMoneyDailyArticles } from "@/lib/getGeniusMoneyDailyArticles";
 
 export const revalidate = 60; // Revalidate content every 60 seconds
 
 export default async function HomePage() {
-  // Server-side fetch pulling published posts from Supabase table 'posts' where workflow_status = 'published'
-  const articles = await fetchPublishedArticles();
+  // Fetch articles filtered specifically for GeniusMoneyDaily via Supabase inner join
+  const articles = await getGeniusMoneyDailyArticles();
 
   return (
     <div>
