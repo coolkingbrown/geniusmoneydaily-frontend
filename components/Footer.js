@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { ShieldCheck, Lock, ArrowUpRight } from "lucide-react";
 
+const LEGAL_LINKS = [
+  { label: "Terms & Conditions", href: "/terms" },
+  { label: "How It Works", href: "/how-it-works" },
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Data Policy", href: "/data-policy" },
+  { label: "Accessible Notice", href: "/accessibility" },
+  { label: "Do Not Sell or Share My Personal Information", href: "/ccpa" },
+  { label: "Privacy Notice", href: "/privacy-notice" },
+  { label: "Unsubscribe", href: "/unsubscribe" },
+];
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -159,21 +170,17 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar (Copyright & Legal) */}
-        <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 pt-4 gap-4">
-          <p>© {currentYear} GeniusMoneyDaily. All rights reserved.</p>
-          <div className="flex items-center space-x-6">
-            <Link href="/privacy" className="hover:text-slate-300 transition-colors">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-slate-300 transition-colors">
-              Terms
-            </Link>
-            <Link href="/disclosures" className="hover:text-slate-300 transition-colors">
-              Disclosures
-            </Link>
-            <Link href="/sitemap" className="hover:text-slate-300 transition-colors">
-              Sitemap
-            </Link>
+        <div className="flex flex-col items-center text-center text-xs text-slate-500 pt-4 gap-3">
+          <p>Copyright © {currentYear} GeniusMoneyDaily</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 max-w-4xl">
+            {LEGAL_LINKS.map((link, index) => (
+              <span key={link.href} className="flex items-center gap-2">
+                <Link href={link.href} className="hover:text-slate-300 transition-colors whitespace-nowrap">
+                  {link.label}
+                </Link>
+                {index < LEGAL_LINKS.length - 1 && <span className="text-slate-600">|</span>}
+              </span>
+            ))}
           </div>
         </div>
 
