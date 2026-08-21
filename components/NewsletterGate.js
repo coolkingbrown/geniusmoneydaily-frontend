@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Mail, CheckCircle2, ShieldCheck, Lock } from "lucide-react";
+import { sendTransactionalEmail } from "@/lib/sendEmail";
 
 export default function NewsletterGate() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,10 @@ export default function NewsletterGate() {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
+
+    // Fire-and-forget: don't let the welcome email delay the confirmation UI.
+    sendTransactionalEmail({ type: "newsletter_welcome", to: email });
+
     setTimeout(() => {
       setLoading(false);
       setSubscribed(true);

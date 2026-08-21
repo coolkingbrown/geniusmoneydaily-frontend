@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import {
@@ -16,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { sendTransactionalEmail } from "@/lib/sendEmail";
 
 // Owned-property fallbacks used when an offer question has no matching
 // override in the article's offer_links (see resolveOfferUrl below).
@@ -66,6 +67,7 @@ const SURVEY_QUESTIONS = [
     yesBounce: true,
     isOffer: true,
     category: "loans",
+    offerName: "Fast Cash Advance",
   },
   {
     key: "car_ownership",
@@ -78,6 +80,7 @@ const SURVEY_QUESTIONS = [
     type: "yesnoskip",
     isOffer: true,
     category: "auto",
+    offerName: "Auto Accident Legal Match",
   },
   {
     key: "life_insurance",
@@ -85,6 +88,7 @@ const SURVEY_QUESTIONS = [
     type: "yesno",
     isOffer: true,
     category: "life",
+    offerName: "$250,000 Life Insurance Quote",
   },
   {
     key: "rising_costs",
@@ -92,6 +96,7 @@ const SURVEY_QUESTIONS = [
     type: "yesno",
     isOffer: true,
     offerUrl: "https://www.goldco.com/",
+    offerName: "Gold & Precious Metals Protection",
   },
   {
     key: "education",
@@ -136,8 +141,24 @@ export default function CoRegFunnel({ offerLinks = [] }) {
   const [leadId, setLeadId] = useState(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [surveyResponses, setSurveyResponses] = useState({});
+  const [selectedOffers, setSelectedOffers] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const hasSentMatchEmail = useRef(false);
+
+  // Fires once, after the funnel reaches "complete", without blocking the
+  // completion screen from rendering.
+  useEffect(() => {
+    if (step === "complete" && !hasSentMatchEmail.current) {
+      hasSentMatchEmail.current = true;
+      sendTransactionalEmail({
+        type: "survey_matched_offers",
+        to: email,
+        firstName,
+        matchedOffers: selectedOffers,
+      });
+    }
+  }, [step, email, firstName, selectedOffers]);
 
   const personalize = (text) =>
     text.replace(/\{first_name\}(,\s*)?/g, firstName ? `${firstName}, ` : "");
@@ -247,6 +268,10 @@ export default function CoRegFunnel({ offerLinks = [] }) {
       window.open(resolvedUrl, "_blank", "noopener,noreferrer");
     }
     logOfferInteraction(question, resolvedUrl);
+    setSelectedOffers((prev) => [
+      ...prev,
+      { offer_name: question.offerName || question.headline, offer_url: resolvedUrl },
+    ]);
     handleAnswer(question, "yes");
   };
 
