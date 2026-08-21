@@ -1,13 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight } from "lucide-react";
+
+const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42 };
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [rates, setRates] = useState(FALLBACK_RATES);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRates() {
+      try {
+        const res = await fetch("/api/rates");
+        if (!res.ok) throw new Error(`Rates request failed: ${res.status}`);
+        const data = await res.json();
+
+        if (!cancelled) {
+          setRates({
+            fedRate: typeof data.fedRate === "number" ? data.fedRate : FALLBACK_RATES.fedRate,
+            mortgage30y: typeof data.mortgage30y === "number" ? data.mortgage30y : FALLBACK_RATES.mortgage30y,
+          });
+        }
+      } catch (err) {
+        console.warn("Could not load live rates, using fallback values:", err);
+      }
+    }
+
+    loadRates();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const navItems = [
     { name: "Loans", href: "/category/loans" },
@@ -27,8 +56,8 @@ export default function Header() {
             <span className="flex items-center text-brand-teal font-semibold">
               <TrendingUp className="w-3.5 h-3.5 mr-1" /> DAILY FINANCIAL PULSE
             </span>
-            <span>Fed Rate: <strong className="text-white">5.25%</strong></span>
-            <span>30Y Fixed Mortgage: <strong className="text-white">6.42%</strong></span>
+            <span>Fed Rate: <strong className="text-white">{rates.fedRate.toFixed(2)}%</strong></span>
+            <span>30Y Fixed Mortgage: <strong className="text-white">{rates.mortgage30y.toFixed(2)}%</strong></span>
             <span>Avg High-Yield APY: <strong className="text-brand-teal font-bold">5.15%</strong></span>
           </div>
           <div className="flex items-center space-x-4 text-slate-400 text-[11px]">

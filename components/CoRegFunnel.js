@@ -128,31 +128,32 @@ export default function CoRegFunnel() {
     setSubmitting(true);
     setError("");
 
-    try {
-      const { data, error: insertError } = await supabase
-        .from("leads")
-        .insert([
-          {
-            email,
-            first_name: pii.firstName,
-            last_name: pii.lastName,
-            street_address: pii.streetAddress,
-            zip_code: pii.zipCode,
-            dob: pii.dob,
-            phone: pii.phone,
-            created_at: new Date().toISOString(),
-          },
-        ])
-        .select()
-        .single();
+    // Generate the id client-side so we don't need a post-insert SELECT
+    // (avoids relying on RLS read access just to get the new row back).
+    const newLeadId = crypto.randomUUID();
 
-      if (insertError || !data) {
+    try {
+      const { error: insertError } = await supabase.from("leads").insert([
+        {
+          id: newLeadId,
+          email,
+          first_name: pii.firstName,
+          last_name: pii.lastName,
+          street_address: pii.streetAddress,
+          zip_code: pii.zipCode,
+          dob: pii.dob,
+          phone: pii.phone,
+          created_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (insertError) {
         console.error("Error creating lead:", insertError);
         setError("Something went wrong saving your info. Please try again.");
         return;
       }
 
-      setLeadId(data.id);
+      setLeadId(newLeadId);
       setFirstName(pii.firstName);
       setStep("survey");
     } catch (err) {
