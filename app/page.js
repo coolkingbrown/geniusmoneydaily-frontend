@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import MagazineGrid from "@/components/MagazineGrid";
+import ToolsSection from "@/components/ToolsSection";
 import { getGeniusMoneyDailyArticles } from "@/lib/getGeniusMoneyDailyArticles";
 
 export const revalidate = 60; // Revalidate content every 60 seconds
@@ -15,6 +16,9 @@ export default async function HomePage() {
 
       {/* 3-Column Magazine News Hub Grid */}
       <MagazineGrid articles={articles} />
+
+      {/* Free Financial Calculator Suite */}
+      <ToolsSection />
     </div>
   );
 }

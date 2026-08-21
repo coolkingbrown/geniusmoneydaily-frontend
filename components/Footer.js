@@ -102,18 +102,18 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/category/loans" className="hover:text-white transition-colors">
-                  Mortgage Rate Calculator
+                <Link href="/#calculators" className="hover:text-white transition-colors">
+                  Mortgage & Refinance Calculator
                 </Link>
               </li>
               <li>
-                <Link href="/category/credit" className="hover:text-white transition-colors">
-                  Balance Transfer Finder
+                <Link href="/#calculators" className="hover:text-white transition-colors">
+                  Debt Consolidation Calculator
                 </Link>
               </li>
               <li>
-                <Link href="/category/savings" className="hover:text-white transition-colors">
-                  APY Comparison Matrix
+                <Link href="/#calculators" className="hover:text-white transition-colors">
+                  Auto Insurance Estimator
                 </Link>
               </li>
             </ul>

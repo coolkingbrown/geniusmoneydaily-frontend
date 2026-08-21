@@ -3,8 +3,15 @@ import Image from "next/image";
 import { ArrowLeft, Clock, Bookmark } from "lucide-react";
 import { fetchPublishedArticles } from "@/lib/fetchArticles";
 
+function toTitleCase(slug) {
+  return slug
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 export default async function CategoryPage({ params }) {
-  const categoryFormatted = params.category.replace(/-/g, " ").toUpperCase();
+  const categoryLabel = toTitleCase(params.category);
   const allArticles = await fetchPublishedArticles();
   
   const filteredArticles = allArticles.filter(
@@ -32,13 +39,13 @@ export default async function CategoryPage({ params }) {
           
           <div className="max-w-3xl space-y-3 relative z-10">
             <span className="bg-brand-teal text-brand-navy text-xs font-black px-3 py-1 rounded-md uppercase tracking-wider">
-              {categoryFormatted} INTELLIGENCE
+              {categoryLabel} Intelligence
             </span>
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-              Latest {categoryFormatted} News & Insights
+              Latest {categoryLabel} News & Insights
             </h1>
             <p className="text-sm sm:text-base text-slate-300">
-              Verified market updates, rates, analytical reports, and consumer advice for {categoryFormatted.toLowerCase()}.
+              Verified market updates, rates, analytical reports, and consumer advice for {categoryLabel.toLowerCase()}.
             </p>
           </div>
         </div>
@@ -59,7 +66,7 @@ export default async function CategoryPage({ params }) {
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <span className="absolute top-3 left-3 bg-brand-navy text-brand-teal text-[10px] font-extrabold px-2.5 py-0.5 rounded uppercase shadow-sm">
-                    {article.category || categoryFormatted}
+                    {article.category || categoryLabel}
                   </span>
                 </div>
                 

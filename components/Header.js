@@ -18,7 +18,7 @@ export default function Header() {
 
     async function loadRates() {
       try {
-        const res = await fetch("/api/rates");
+        const res = await fetch("/api/fred-rates");
         if (!res.ok) throw new Error(`Rates request failed: ${res.status}`);
         const data = await res.json();
 

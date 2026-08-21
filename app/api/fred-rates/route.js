@@ -23,9 +23,13 @@ async function fetchLatestObservation(seriesId) {
 }
 
 export async function GET() {
+  // Client-side cache: browsers/CDNs can reuse this for an hour, and keep
+  // serving a stale copy for up to a day while revalidating in the background.
+  const headers = { "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400" };
+
   if (!process.env.FRED_API_KEY) {
     console.warn("FRED_API_KEY is not set; returning fallback rates.");
-    return NextResponse.json({ ...FALLBACK_RATES, source: "fallback" });
+    return NextResponse.json({ ...FALLBACK_RATES, source: "fallback" }, { headers });
   }
 
   try {
@@ -34,13 +38,17 @@ export async function GET() {
       fetchLatestObservation("MORTGAGE30US"),
     ]);
 
-    return NextResponse.json({
-      fedRate: fedRate ?? FALLBACK_RATES.fedRate,
-      mortgage30y: mortgage30y ?? FALLBACK_RATES.mortgage30y,
-      source: "fred",
-    });
+    return NextResponse.json(
+      {
+        fedRate: fedRate ?? FALLBACK_RATES.fedRate,
+        mortgage30y: mortgage30y ?? FALLBACK_RATES.mortgage30y,
+        source: "fred",
+      },
+      { headers }
+    );
   } catch (err) {
+    // Covers both network failures and FRED rate-limit responses.
     console.error("Error fetching FRED rates:", err);
-    return NextResponse.json({ ...FALLBACK_RATES, source: "fallback" });
+    return NextResponse.json({ ...FALLBACK_RATES, source: "fallback" }, { headers });
   }
 }
