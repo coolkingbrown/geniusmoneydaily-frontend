@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <LegalPageShell title="GeniusMoneyDaily Privacy Policy" updatedLabel="Effective: October 16, 2023">
+    <LegalPageShell title="GeniusMoneyDaily Privacy Policy" updatedLabel="Effective: October 16, 2025">
       <PrivacyPolicyContent />
     </LegalPageShell>
   );

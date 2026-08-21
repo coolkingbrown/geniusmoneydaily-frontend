@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function PrivacyNoticePage() {
   return (
-    <LegalPageShell title="Privacy Notice" updatedLabel="Effective: October 16, 2023">
+    <LegalPageShell title="Privacy Notice" updatedLabel="Effective: October 16, 2025">
       <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider -mt-2">
         State-Specific Consumer Disclosures
       </p>
