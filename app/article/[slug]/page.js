@@ -105,7 +105,7 @@ export default async function ArticlePage({ params }) {
             <span className="text-xs font-black text-brand-teal uppercase tracking-widest">
               NEXT STEP FOR READERS
             </span>
-            <h3 className="text-xl font-bold">
+            <h3 className="text-xl font-bold text-white">
               Ready to optimize your personal loan rates and tax position?
             </h3>
             <p className="text-sm text-slate-300">

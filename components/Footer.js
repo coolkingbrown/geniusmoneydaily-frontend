@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck, Lock, ArrowUpRight } from "lucide-react";
+import LogoIcon from "@/components/LogoIcon";
 
 const LEGAL_LINKS = [
   { label: "Terms & Conditions", href: "/terms" },
@@ -25,9 +26,7 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-brand-teal flex items-center justify-center text-brand-navy font-black text-xl shadow-md">
-                G
-              </div>
+              <LogoIcon variant="inverted" size={36} className="rounded-lg shadow-md" />
               <div className="flex items-center">
                 <span className="font-extrabold text-xl tracking-tight text-white">
                   GeniusMoney
@@ -53,7 +52,7 @@ export default function Footer() {
 
           {/* Navigation Column 1: Categories */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider text-brand-teal">
+            <h4 className="text-xs font-extrabold text-brand-teal uppercase tracking-wider">
               Financial Hubs
             </h4>
             <ul className="space-y-2 text-sm text-slate-400 font-medium">
@@ -92,7 +91,7 @@ export default function Footer() {
 
           {/* Navigation Column 2: Tools & Resources */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider text-brand-teal">
+            <h4 className="text-xs font-extrabold text-brand-teal uppercase tracking-wider">
               Tools & Services
             </h4>
             <ul className="space-y-2 text-sm text-slate-400 font-medium">
@@ -122,7 +121,7 @@ export default function Footer() {
 
           {/* Navigation Column 3: Corporate & Legal */}
           <div className="space-y-3">
-            <h4 className="text-xs font-extrabold text-white uppercase tracking-wider text-brand-teal">
+            <h4 className="text-xs font-extrabold text-brand-teal uppercase tracking-wider">
               Legal & Info
             </h4>
             <ul className="space-y-2 text-sm text-slate-400 font-medium">

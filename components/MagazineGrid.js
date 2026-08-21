@@ -299,7 +299,7 @@ export default function MagazineGrid({ articles = [] }) {
               <span className="text-[10px] font-bold text-brand-teal uppercase tracking-widest">
                 Daily Market Alert
               </span>
-              <h4 className="text-sm font-bold leading-tight">
+              <h4 className="text-sm font-bold leading-tight text-white">
                 Get rate cuts & credit updates sent to your inbox every morning.
               </h4>
               <Link

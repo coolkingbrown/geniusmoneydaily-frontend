@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight } from "lucide-react";
+import LogoIcon from "@/components/LogoIcon";
 
 const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42 };
 
@@ -75,9 +76,7 @@ export default function Header() {
           
           {/* Left-Aligned Logo (Without .com) */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-lg bg-brand-navy flex items-center justify-center text-brand-teal font-black text-xl shadow-md group-hover:bg-brand-navy-light transition-colors">
-              G
-            </div>
+            <LogoIcon variant="default" size={40} className="rounded-lg shadow-md" />
             <div className="flex flex-col">
               <div className="flex items-center">
                 <span className="font-extrabold text-2xl tracking-tight text-brand-navy">
@@ -88,7 +87,7 @@ export default function Header() {
                 </span>
               </div>
               <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 -mt-1">
-                High-Authority Financial Hub
+                Lifestyle Fashion & Finance
               </span>
             </div>
           </Link>

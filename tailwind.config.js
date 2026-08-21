@@ -12,7 +12,7 @@ module.exports = {
           teal: "#00D29F",
           "teal-hover": "#00B88B",
           "teal-light": "#E6FBF5",
-          navy: "#1A2045",
+          navy: "#121833",
           "navy-light": "#242C5B",
           "navy-dark": "#121631",
           slate: "#2D3748",

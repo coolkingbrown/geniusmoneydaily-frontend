@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import LogoIcon from "@/components/LogoIcon";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=800&auto=format&fit=crop";
@@ -27,6 +28,7 @@ export default function ArticleCard({ article }) {
             {article.vertical.replace(/-/g, " ")}
           </span>
         )}
+        <LogoIcon variant="default" size={28} className="absolute top-3 right-3 rounded-md shadow-sm" />
       </Link>
 
       <div className="p-5 flex flex-col flex-1 space-y-2">

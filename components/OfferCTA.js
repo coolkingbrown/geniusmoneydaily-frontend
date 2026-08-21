@@ -103,7 +103,7 @@ export default function OfferCTA({ offers = [], zone }) {
               className="bg-brand-navy text-white rounded-2xl p-6 sm:p-8 border border-brand-navy-light space-y-4"
             >
               <span className="text-xs font-black text-brand-teal uppercase tracking-widest">Next Step for Readers</span>
-              <h3 className="text-xl sm:text-2xl font-bold leading-tight">{offer.brand_name}</h3>
+              <h3 className="text-xl sm:text-2xl font-bold leading-tight text-white">{offer.brand_name}</h3>
               {offer.cta_text && <p className="text-sm text-slate-300">{offer.cta_text}</p>}
               <div>
                 <button

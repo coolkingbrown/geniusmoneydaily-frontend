@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { sendTransactionalEmail } from "@/lib/sendEmail";
+import LogoIcon from "@/components/LogoIcon";
 
 // Owned-property fallbacks used when an offer question has no matching
 // override in the article's offer_links (see resolveOfferUrl below).
@@ -280,6 +281,10 @@ export default function CoRegFunnel({ offerLinks = [] }) {
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 p-8 sm:p-10">
+      <div className="flex justify-center mb-6">
+        <LogoIcon variant="default" size={40} className="rounded-lg shadow-md" />
+      </div>
+
       {step === "email" && (
         <form onSubmit={handleEmailSubmit} className="space-y-6 text-center animate-fade-in">
           <div className="inline-flex items-center gap-1.5 bg-brand-teal/15 text-emerald-800 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-widest">
