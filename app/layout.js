@@ -15,6 +15,9 @@ export const metadata = {
   description: "Smart, data-backed financial insights delivered daily. Expert analysis on loans, credit score hacks, high-yield savings, real estate trends, and tax planning.",
   keywords: ["financial magazine", "loans", "credit score", "high yield savings", "real estate mortgages", "tax strategy", "GeniusMoneyDaily"],
   authors: [{ name: "GeniusMoneyDaily Editorial Team" }],
+  icons: {
+    icon: "/icon.svg",
+  },
   openGraph: {
     title: "GeniusMoneyDaily.com | Smart Financial Insights, Delivered Daily",
     description: "Data-backed mortgage strategies, high-yield rate updates, tax optimization, and credit hacks.",

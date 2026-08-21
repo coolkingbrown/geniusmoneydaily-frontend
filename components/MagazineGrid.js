@@ -1,69 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Flame, ArrowUpRight, ChevronRight, Bookmark } from "lucide-react";
-
-const FALLBACK_ARTICLES = [
-  {
-    id: "feat-1",
-    slug: "fed-interest-rate-pivot-2026-strategy",
-    title: "Federal Reserve Signals Key Rate Pivot: How to Position Your Portfolio Today",
-    excerpt: "With inflation moderating and employment metrics shifting, Wall Street strategists outline top high-yield cash reserves, bond strategies, and stock allocations for 2026.",
-    category: "Loans",
-    read_time: "5 min read",
-    created_at: "2026-08-19",
-    author: "Elena Rostova",
-    featured_image_url: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "top-1",
-    slug: "7-high-yield-savings-accounts-beating-inflation",
-    title: "7 High-Yield Savings Accounts Currently Offering Over 5.2% APY",
-    excerpt: "Maximize your emergency fund returns with FDIC-insured digital banks offering record yields.",
-    category: "Savings",
-    read_time: "3 min read",
-    created_at: "2026-08-18",
-    author: "Marcus Vance",
-    featured_image_url: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: "top-2",
-    slug: "credit-score-hacks-boost-50-points-30-days",
-    title: "3 Credit Score Hacks to Add 50 Points to Your FICO in 30 Days",
-    excerpt: "Simple utilization strategies and reporting techniques mortgage lenders don't always advertise.",
-    category: "Credit",
-    read_time: "4 min read",
-    created_at: "2026-08-17",
-    author: "Sophia Chen",
-    featured_image_url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=600&auto=format&fit=crop",
-  },
-  {
-    id: "trend-1",
-    slug: "2026-tax-bracket-changes-wealth-preservation",
-    title: "2026 Tax Bracket Adjustments: Crucial Deductions Every High Earner Must Lock In Now",
-    category: "Taxes",
-    read_time: "4 min read",
-    created_at: "2026-08-19",
-    reads: "14.2k",
-  },
-  {
-    id: "trend-2",
-    slug: "mortgage-rate-lock-strategies-homebuyers",
-    title: "Mortgage Rates Ease to 6-Month Lows: Should You Buy or Wait for Autumn?",
-    category: "Real Estate",
-    read_time: "5 min read",
-    created_at: "2026-08-18",
-    reads: "11.8k",
-  },
-  {
-    id: "trend-3",
-    slug: "best-balance-transfer-cards-zero-apr",
-    title: "Best 0% Intro APR Balance Transfer Credit Cards for Wiping Out Debt Fast",
-    category: "Credit",
-    read_time: "3 min read",
-    created_at: "2026-08-18",
-    reads: "9.5k",
-  },
-];
+import { FALLBACK_ARTICLES } from "@/lib/mockArticles";
 
 export default function MagazineGrid({ articles = [] }) {
   // Combine returned Supabase articles with fallbacks if fewer than 6 articles exist

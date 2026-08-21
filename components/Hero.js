@@ -19,7 +19,7 @@ export default function Hero() {
 
           {/* Main Large White Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
-            Smart Financial Insights, <br className="hidden sm:inline" />
+            Smart Wealth. Elevated Living. <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal via-emerald-300 to-white">
               Delivered Daily.
             </span>
@@ -27,7 +27,7 @@ export default function Hero() {
 
           {/* Subtitle */}
           <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
-            Data-backed mortgage strategies, high-yield rate updates, tax optimization, and credit hacks curated for modern wealth building.
+            Data-backed rate updates, lifestyle trends, tax optimization, and wellness hacks curated for modern living.
           </p>
 
           {/* Prominent CTA Button (White text, #00D29F background) */}

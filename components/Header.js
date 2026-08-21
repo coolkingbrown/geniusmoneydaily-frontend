@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight } from "lucide-react";
+import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import LogoIcon from "@/components/LogoIcon";
 
 const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42 };
@@ -12,6 +12,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [rates, setRates] = useState(FALLBACK_RATES);
+  const [lifestyleDropdownOpen, setLifestyleDropdownOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,7 +46,14 @@ export default function Header() {
     { name: "Savings", href: "/category/savings" },
     { name: "Real Estate", href: "/category/real-estate" },
     { name: "Taxes", href: "/category/taxes" },
-    { name: "Lifestyle", href: "/category/lifestyle" },
+    {
+      name: "Lifestyle",
+      href: "/category/lifestyle",
+      subItems: [
+        { name: "Fashion", href: "/category/lifestyle" },
+        { name: "Fitness & Wellness", href: "/category/lifestyle" },
+      ],
+    },
   ];
 
   return (
@@ -94,15 +102,48 @@ export default function Header() {
 
           {/* Right-Aligned Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="px-3.5 py-2 text-sm font-bold text-slate-700 hover:text-brand-navy hover:bg-slate-100 rounded-md transition-all duration-150"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) =>
+              item.subItems ? (
+                <div
+                  key={item.name}
+                  className="relative"
+                  onMouseEnter={() => setLifestyleDropdownOpen(true)}
+                  onMouseLeave={() => setLifestyleDropdownOpen(false)}
+                >
+                  <Link
+                    href={item.href}
+                    className="px-3.5 py-2 text-sm font-bold text-slate-700 hover:text-brand-navy hover:bg-slate-100 rounded-md transition-all duration-150 flex items-center gap-1"
+                  >
+                    {item.name}
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </Link>
+
+                  {lifestyleDropdownOpen && (
+                    <div className="absolute top-full left-0 pt-1 w-52 z-50">
+                      <div className="bg-white border border-slate-200 rounded-lg shadow-lg py-1.5">
+                        {item.subItems.map((sub) => (
+                          <Link
+                            key={sub.name}
+                            href={sub.href}
+                            className="block px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 hover:text-brand-navy transition-colors"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="px-3.5 py-2 text-sm font-bold text-slate-700 hover:text-brand-navy hover:bg-slate-100 rounded-md transition-all duration-150"
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Header Action Controls (Search & CTA) */}
@@ -169,14 +210,29 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-2">
           {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2.5 text-base font-semibold text-slate-800 hover:bg-slate-100 rounded-md"
-            >
-              {item.name}
-            </Link>
+            <div key={item.name}>
+              <Link
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2.5 text-base font-semibold text-slate-800 hover:bg-slate-100 rounded-md"
+              >
+                {item.name}
+              </Link>
+              {item.subItems && (
+                <div className="pl-4 space-y-1">
+                  {item.subItems.map((sub) => (
+                    <Link
+                      key={sub.name}
+                      href={sub.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 rounded-md"
+                    >
+                      {sub.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
           <div className="pt-3 border-t border-slate-200">
             <Link
