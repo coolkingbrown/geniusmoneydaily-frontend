@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Landmark, CreditCard, Home, Car, HeartPulse, Calculator, PiggyBank } from "lucide-react";
 import PersonalLoanCalculator from "@/components/PersonalLoanCalculator";
 import CreditCardPayoffCalculator from "@/components/CreditCardPayoffCalculator";
@@ -12,17 +12,51 @@ import DebtCalculator from "@/components/DebtCalculator";
 
 const TOOLS = [
   { id: "personal-loan", label: "Personal Loan", icon: Landmark, Component: PersonalLoanCalculator },
-  { id: "credit-card", label: "Card Payoff", icon: CreditCard, Component: CreditCardPayoffCalculator },
-  { id: "home-upgrade", label: "Home Upgrades", icon: Home, Component: HomeUpgradeCalculator },
+  { id: "card-payoff", label: "Card Payoff", icon: CreditCard, Component: CreditCardPayoffCalculator },
+  { id: "home-upgrades", label: "Home Upgrades", icon: Home, Component: HomeUpgradeCalculator },
   { id: "auto-insurance", label: "Auto Insurance", icon: Car, Component: AutoInsuranceCalculator },
   { id: "life-insurance", label: "Life Insurance", icon: HeartPulse, Component: LifeInsuranceCalculator },
   { id: "mortgage", label: "Mortgage & Refi", icon: Calculator, Component: MortgageCalculator },
   { id: "debt-consolidation", label: "Debt Consolidation", icon: PiggyBank, Component: DebtCalculator },
 ];
 
+const DEFAULT_TOOL_ID = TOOLS[0].id;
+const VALID_IDS = new Set(TOOLS.map((tool) => tool.id));
+
+// Footer deep-links use "/#calculators?tab=X" — the tab param lives inside
+// the hash fragment (after the "?"), not the real query string, so
+// useSearchParams (which reads location.search) can't see it. Parsing
+// window.location.hash directly is the only way to read it.
+function readTabFromHash() {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash; // e.g. "#calculators?tab=auto-insurance"
+  const queryIndex = hash.indexOf("?");
+  if (queryIndex === -1) return null;
+  const tab = new URLSearchParams(hash.slice(queryIndex + 1)).get("tab");
+  return VALID_IDS.has(tab) ? tab : null;
+}
+
 export default function ToolsSection() {
-  const [activeId, setActiveId] = useState(TOOLS[0].id);
-  const active = TOOLS.find((tool) => tool.id === activeId);
+  const [activeId, setActiveId] = useState(DEFAULT_TOOL_ID);
+
+  const applyTabFromHash = useCallback(() => {
+    const tab = readTabFromHash();
+    if (!tab) return;
+    setActiveId(tab);
+    // Defer to the next frame so the section has rendered before scrolling.
+    requestAnimationFrame(() => {
+      document.getElementById("calculators")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
+
+  useEffect(() => {
+    applyTabFromHash();
+
+    window.addEventListener("hashchange", applyTabFromHash);
+    return () => window.removeEventListener("hashchange", applyTabFromHash);
+  }, [applyTabFromHash]);
+
+  const active = TOOLS.find((tool) => tool.id === activeId) || TOOLS[0];
   const ActiveComponent = active.Component;
 
   return (
