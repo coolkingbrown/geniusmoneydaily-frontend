@@ -9,7 +9,10 @@ import CoRegFunnel from "@/components/CoRegFunnel";
 // {
 //   id, brand_name, logo_url, cta_text, offer_url,
 //   zone: "inline" | "sidebar" | "footer-cta" | "sticky-bar",
-//   placement: "redirect" | "coreg-modal"   // default "redirect"
+//   placement: "redirect" | "coreg-modal",  // default "redirect"
+//   category: "loans" | "auto" | "life"     // optional; overrides the
+//                                            // matching SafeBet default
+//                                            // inside CoRegFunnel's survey
 // }
 export default function OfferCTA({ offers = [], zone }) {
   const [activeOffer, setActiveOffer] = useState(null);
@@ -149,7 +152,7 @@ export default function OfferCTA({ offers = [], zone }) {
             >
               <X className="w-4 h-4" />
             </button>
-            <CoRegFunnel />
+            <CoRegFunnel offerLinks={offers} />
           </div>
         </div>
       )}

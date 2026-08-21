@@ -17,8 +17,19 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 
+// Owned-property fallbacks used when an offer question has no matching
+// override in the article's offer_links (see resolveOfferUrl below).
+const DEFAULT_OFFER_URLS = {
+  loans: "https://safebetloans.com/",
+  auto: "https://safebetauto.com/",
+  life: "http://safebetlife.com/",
+};
+
 // Survey/offer pathing config for Step 3. `isOffer` questions log an
-// accepted_yes interaction and open offer_url when the user clicks Yes.
+// accepted_yes interaction and open a resolved offer URL when the user
+// clicks Yes. Questions with a `category` resolve their URL dynamically
+// (article override -> SafeBet default); questions with a static
+// `offerUrl` always use that value.
 const SURVEY_QUESTIONS = [
   {
     key: "income",
@@ -54,7 +65,7 @@ const SURVEY_QUESTIONS = [
     type: "yesno",
     yesBounce: true,
     isOffer: true,
-    offerUrl: "https://www.upstart.com/",
+    category: "loans",
   },
   {
     key: "car_ownership",
@@ -66,14 +77,14 @@ const SURVEY_QUESTIONS = [
     headline: "Were You in an Auto Accident in the Last 12 Months?",
     type: "yesnoskip",
     isOffer: true,
-    offerUrl: "https://www.legalmatch.com/",
+    category: "auto",
   },
   {
     key: "life_insurance",
     headline: "{first_name}, You can get $250,000 in life insurance!",
     type: "yesno",
     isOffer: true,
-    offerUrl: "https://www.selectquote.com/",
+    category: "life",
   },
   {
     key: "rising_costs",
@@ -103,7 +114,21 @@ const EMPTY_PII = {
   phone: "",
 };
 
-export default function CoRegFunnel() {
+// Resolves the URL an offer question should open: an article-supplied
+// override (matched by category) takes priority, then the SafeBet
+// default for that category, then the question's own static offerUrl.
+function resolveOfferUrl(question, offerLinks) {
+  if (question.category) {
+    const override = (offerLinks || []).find(
+      (offer) => offer.category === question.category && offer.offer_url
+    );
+    if (override) return override.offer_url;
+    return DEFAULT_OFFER_URLS[question.category] || question.offerUrl || null;
+  }
+  return question.offerUrl || null;
+}
+
+export default function CoRegFunnel({ offerLinks = [] }) {
   const [step, setStep] = useState("email"); // email | pii | survey | complete
   const [email, setEmail] = useState("");
   const [pii, setPii] = useState(EMPTY_PII);
@@ -175,7 +200,7 @@ export default function CoRegFunnel() {
     });
   };
 
-  const logOfferInteraction = (question) => {
+  const logOfferInteraction = (question, resolvedUrl) => {
     if (!leadId) return;
     supabase
       .from("lead_offer_interactions")
@@ -183,7 +208,7 @@ export default function CoRegFunnel() {
         {
           lead_id: leadId,
           question_key: question.key,
-          offer_url: question.offerUrl,
+          offer_url: resolvedUrl,
           interaction_type: "accepted_yes",
           created_at: new Date().toISOString(),
         },
@@ -216,11 +241,12 @@ export default function CoRegFunnel() {
   };
 
   const handleOfferYes = (question) => {
+    const resolvedUrl = resolveOfferUrl(question, offerLinks);
     // Must fire synchronously (before any await) or browsers block the popup.
-    if (question.offerUrl) {
-      window.open(question.offerUrl, "_blank", "noopener,noreferrer");
+    if (resolvedUrl) {
+      window.open(resolvedUrl, "_blank", "noopener,noreferrer");
     }
-    logOfferInteraction(question);
+    logOfferInteraction(question, resolvedUrl);
     handleAnswer(question, "yes");
   };
 
