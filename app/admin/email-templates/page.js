@@ -6,7 +6,7 @@ import {
   getAutoInsuranceEmail,
   getLifeInsuranceEmail,
   getContactAcknowledgementEmail,
-  getSurveyMatchedOffersEmail,
+  getMatchedOffersEmail,
 } from "@/lib/emailTemplates";
 
 export const metadata = {
@@ -21,8 +21,8 @@ const SAMPLE_MATCHED_OFFERS = [
 ];
 
 export default function EmailTemplateLibraryPage() {
-  // Rendered server-side because the templates rely on Buffer (Node-only)
-  // for the inline logo data URI — see lib/emailTemplates.js.
+  // Rendered server-side so each template's HTML is computed once here and
+  // passed down as plain strings — see lib/emailTemplates.js.
   const templates = [
     { id: "drip-day1", label: "Day 1 — Welcome", ...getWelcomeEmail({ firstName: SAMPLE_NAME }) },
     { id: "drip-day2", label: "Day 2 — High-Yield APY", ...getHighYieldEmail({ firstName: SAMPLE_NAME }) },
@@ -37,7 +37,12 @@ export default function EmailTemplateLibraryPage() {
     {
       id: "matched-offers",
       label: "Matched Offers",
-      ...getSurveyMatchedOffersEmail({ firstName: SAMPLE_NAME, matchedOffers: SAMPLE_MATCHED_OFFERS }),
+      ...getMatchedOffersEmail({ firstName: SAMPLE_NAME, matchedOffers: SAMPLE_MATCHED_OFFERS }),
+    },
+    {
+      id: "matched-offers-empty",
+      label: "Matched Offers (No Matches)",
+      ...getMatchedOffersEmail({ firstName: SAMPLE_NAME, matchedOffers: [] }),
     },
   ];
 

@@ -3,7 +3,7 @@ import sgMail from "@sendgrid/mail";
 import {
   getNewsletterWelcomeEmail,
   getContactAcknowledgementEmail,
-  getSurveyMatchedOffersEmail,
+  getMatchedOffersEmail,
   getWelcomeEmail,
   getHighYieldEmail,
   getDebtConsolidationEmail,
@@ -39,7 +39,7 @@ export async function POST(request) {
       });
       break;
     case "survey_matched_offers":
-      emailContent = getSurveyMatchedOffersEmail({
+      emailContent = getMatchedOffersEmail({
         firstName: body.firstName,
         matchedOffers: Array.isArray(body.matchedOffers) ? body.matchedOffers : [],
       });
