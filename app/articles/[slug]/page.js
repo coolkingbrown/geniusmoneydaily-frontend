@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { getArticleBySlug } from "@/lib/blogArticles";
 import ArticleBody from "@/components/ArticleBody";
+import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import OfferCTA from "@/components/OfferCTA";
 
 export async function generateMetadata({ params }) {
@@ -106,6 +107,8 @@ export default async function BlogArticlePage({ params }) {
             )}
 
             <ArticleBody html={article.body_content} />
+
+            <ArticleDisclaimer sources={article.sources} disclaimerNote={article.disclaimer_note} />
 
             <OfferCTA offers={offers} zone="inline" />
             <OfferCTA offers={offers} zone="footer-cta" />
