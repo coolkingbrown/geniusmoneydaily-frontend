@@ -11,6 +11,9 @@ const VERTICAL_LABELS = {
   "real-estate": "Real Estate",
   taxes: "Taxes",
   lifestyle: "Lifestyle",
+  "auto-insurance": "Auto Insurance",
+  "life-insurance": "Life Insurance",
+  "home-services": "Home Services",
 };
 
 function labelFor(vertical) {

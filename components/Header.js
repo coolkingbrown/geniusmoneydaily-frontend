@@ -41,19 +41,22 @@ export default function Header() {
   }, []);
 
   const navItems = [
-    { name: "Loans", href: "/category/loans" },
-    { name: "Credit", href: "/category/credit" },
-    { name: "Savings", href: "/category/savings" },
-    { name: "Real Estate", href: "/category/real-estate" },
-    { name: "Taxes", href: "/category/taxes" },
+    { name: "Loans", href: "/articles/category/loans" },
+    { name: "Credit", href: "/articles/category/credit" },
+    { name: "Savings", href: "/articles/category/savings" },
+    { name: "Real Estate", href: "/articles/category/real-estate" },
+    { name: "Taxes", href: "/articles/category/taxes" },
     {
       name: "Lifestyle",
-      href: "/category/lifestyle",
+      href: "/articles/category/lifestyle",
       subItems: [
-        { name: "Fashion", href: "/category/lifestyle" },
-        { name: "Fitness & Wellness", href: "/category/lifestyle" },
+        { name: "Fashion", href: "/articles/category/lifestyle" },
+        { name: "Fitness & Wellness", href: "/articles/category/lifestyle" },
       ],
     },
+    { name: "Auto Insurance", href: "/articles/category/auto-insurance" },
+    { name: "Life Insurance", href: "/articles/category/life-insurance" },
+    { name: "Home Services", href: "/articles/category/home-services" },
   ];
 
   return (

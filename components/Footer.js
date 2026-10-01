@@ -57,33 +57,48 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-slate-400 font-medium">
               <li>
-                <Link href="/category/loans" className="hover:text-white transition-colors">
+                <Link href="/articles/category/loans" className="hover:text-white transition-colors">
                   Loans & Refinancing
                 </Link>
               </li>
               <li>
-                <Link href="/category/credit" className="hover:text-white transition-colors">
+                <Link href="/articles/category/credit" className="hover:text-white transition-colors">
                   Credit Cards & FICO
                 </Link>
               </li>
               <li>
-                <Link href="/category/savings" className="hover:text-white transition-colors">
+                <Link href="/articles/category/savings" className="hover:text-white transition-colors">
                   High-Yield Savings
                 </Link>
               </li>
               <li>
-                <Link href="/category/real-estate" className="hover:text-white transition-colors">
+                <Link href="/articles/category/real-estate" className="hover:text-white transition-colors">
                   Real Estate & Mortgages
                 </Link>
               </li>
               <li>
-                <Link href="/category/taxes" className="hover:text-white transition-colors">
+                <Link href="/articles/category/taxes" className="hover:text-white transition-colors">
                   Tax Planning & Wealth
                 </Link>
               </li>
               <li>
-                <Link href="/category/lifestyle" className="hover:text-white transition-colors">
+                <Link href="/articles/category/lifestyle" className="hover:text-white transition-colors">
                   Lifestyle & Wellness
+                </Link>
+              </li>
+              <li>
+                <Link href="/articles/category/auto-insurance" className="hover:text-white transition-colors">
+                  Auto Insurance
+                </Link>
+              </li>
+              <li>
+                <Link href="/articles/category/life-insurance" className="hover:text-white transition-colors">
+                  Life Insurance
+                </Link>
+              </li>
+              <li>
+                <Link href="/articles/category/home-services" className="hover:text-white transition-colors">
+                  Home Services
                 </Link>
               </li>
             </ul>
