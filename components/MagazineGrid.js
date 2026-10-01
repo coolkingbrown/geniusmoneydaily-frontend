@@ -9,9 +9,6 @@ const CATEGORY_CHIPS = [
   { label: "Real Estate", slug: "real-estate" },
   { label: "Taxes", slug: "taxes" },
   { label: "Lifestyle", slug: "lifestyle" },
-  { label: "Auto Insurance", slug: "auto-insurance" },
-  { label: "Life Insurance", slug: "life-insurance" },
-  { label: "Home Services", slug: "home-services" },
 ];
 
 function formatVertical(vertical) {
