@@ -54,9 +54,6 @@ export default function Header() {
         { name: "Fitness & Wellness", href: "/articles/category/lifestyle" },
       ],
     },
-    { name: "Auto Insurance", href: "/articles/category/auto-insurance" },
-    { name: "Life Insurance", href: "/articles/category/life-insurance" },
-    { name: "Home Services", href: "/articles/category/home-services" },
   ];
 
   return (
