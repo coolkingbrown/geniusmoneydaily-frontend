@@ -50,8 +50,8 @@ export default function Header() {
       name: "Lifestyle",
       href: "/articles/category/lifestyle",
       subItems: [
-        { name: "Fashion", href: "/articles/category/lifestyle" },
-        { name: "Fitness & Wellness", href: "/articles/category/lifestyle" },
+        { name: "Fashion", href: "/articles/category/fashion" },
+        { name: "Fitness & Wellness", href: "/articles/category/fitness-wellness" },
       ],
     },
   ];

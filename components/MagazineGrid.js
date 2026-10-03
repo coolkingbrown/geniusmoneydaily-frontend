@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Clock, Flame, ArrowUpRight, ChevronRight, Bookmark } from "lucide-react";
+import { verticalLabel } from "@/lib/verticals";
 
 const CATEGORY_CHIPS = [
   { label: "Loans", slug: "loans" },
@@ -11,13 +12,7 @@ const CATEGORY_CHIPS = [
   { label: "Lifestyle", slug: "lifestyle" },
 ];
 
-function formatVertical(vertical) {
-  if (!vertical) return null;
-  return vertical
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+const formatVertical = verticalLabel;
 
 function formatDate(dateStr) {
   if (!dateStr) return "Today";

@@ -3,22 +3,9 @@ import { ArrowLeft } from "lucide-react";
 import ArticleCard from "@/components/ArticleCard";
 import Pagination from "@/components/Pagination";
 import { getPublishedArticles } from "@/lib/blogArticles";
+import { verticalLabel } from "@/lib/verticals";
 
-const VERTICAL_LABELS = {
-  loans: "Loans",
-  credit: "Credit",
-  savings: "Savings",
-  "real-estate": "Real Estate",
-  taxes: "Taxes",
-  lifestyle: "Lifestyle",
-  "auto-insurance": "Auto Insurance",
-  "life-insurance": "Life Insurance",
-  "home-services": "Home Services",
-};
-
-function labelFor(vertical) {
-  return VERTICAL_LABELS[vertical] || vertical.replace(/-/g, " ");
-}
+const labelFor = verticalLabel;
 
 export async function generateMetadata({ params }) {
   const label = labelFor(params.vertical);

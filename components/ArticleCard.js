@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import LogoIcon from "@/components/LogoIcon";
+import { verticalLabel } from "@/lib/verticals";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=800&auto=format&fit=crop";
@@ -25,7 +26,7 @@ export default function ArticleCard({ article }) {
         />
         {article.vertical && (
           <span className="absolute top-3 left-3 bg-brand-navy/90 text-brand-teal text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded shadow-sm backdrop-blur-sm">
-            {article.vertical.replace(/-/g, " ")}
+            {verticalLabel(article.vertical)}
           </span>
         )}
         <LogoIcon variant="default" size={28} className="absolute top-3 right-3 rounded-md shadow-sm" />
