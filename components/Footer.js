@@ -151,6 +151,11 @@ export default function Footer() {
                   Debt Consolidation Calculator
                 </Link>
               </li>
+              <li>
+                <Link href="/tools/budget-calculator" className="hover:text-white transition-colors">
+                  Monthly Budget Calculator
+                </Link>
+              </li>
             </ul>
           </div>
 

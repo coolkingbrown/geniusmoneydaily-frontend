@@ -28,6 +28,17 @@ const TOOL_EMBED_ATTRIBUTES = [
   "data-rate",
   "data-card-apr",
   "data-loan-apr",
+  "data-housing",
+  "data-transportation",
+  "data-food",
+  "data-utilities",
+  "data-insurance",
+  "data-entertainment",
+  "data-savings",
+  "data-other",
+  "data-mode",
+  "data-goal-amount",
+  "data-goal-months",
 ];
 
 const SANITIZE_OPTIONS = {

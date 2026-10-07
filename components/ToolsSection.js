@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Landmark, CreditCard, Home, Car, HeartPulse, Calculator, PiggyBank } from "lucide-react";
+import { Landmark, CreditCard, Home, Car, HeartPulse, Calculator, PiggyBank, Wallet } from "lucide-react";
 import PersonalLoanCalculator from "@/components/PersonalLoanCalculator";
 import CreditCardPayoffCalculator from "@/components/CreditCardPayoffCalculator";
 import HomeUpgradeCalculator from "@/components/HomeUpgradeCalculator";
@@ -9,6 +9,7 @@ import AutoInsuranceCalculator from "@/components/AutoInsuranceCalculator";
 import LifeInsuranceCalculator from "@/components/LifeInsuranceCalculator";
 import MortgageCalculator from "@/components/MortgageCalculator";
 import DebtCalculator from "@/components/DebtCalculator";
+import BudgetCalculator from "@/components/BudgetCalculator";
 
 const TOOLS = [
   { id: "personal-loan", label: "Personal Loan", icon: Landmark, Component: PersonalLoanCalculator },
@@ -18,6 +19,7 @@ const TOOLS = [
   { id: "life-insurance", label: "Life Insurance", icon: HeartPulse, Component: LifeInsuranceCalculator },
   { id: "mortgage", label: "Mortgage & Refi", icon: Calculator, Component: MortgageCalculator },
   { id: "debt-consolidation", label: "Debt Consolidation", icon: PiggyBank, Component: DebtCalculator },
+  { id: "budget", label: "Budget", icon: Wallet, Component: BudgetCalculator },
 ];
 
 const DEFAULT_TOOL_ID = TOOLS[0].id;
@@ -67,7 +69,7 @@ export default function ToolsSection() {
             Free Financial Tools
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-brand-navy tracking-tight">
-            7 Calculators to Plan Your Next Money Move
+            8 Calculators to Plan Your Next Money Move
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto">
             Instant, no-obligation estimates across loans, insurance, home upgrades, and more.

@@ -5,7 +5,7 @@ import { TOOLS_CONFIG, TOOL_SLUGS } from "@/lib/toolsConfig";
 export const metadata = {
   title: "Free Financial Calculators | GeniusMoneyDaily",
   description:
-    "Seven free calculators for loans, credit cards, home upgrades, auto insurance, life insurance, mortgages, and debt consolidation — instant estimates, no sign-up required.",
+    "Eight free calculators for loans, credit cards, home upgrades, auto insurance, life insurance, mortgages, debt consolidation, and monthly budgeting — instant estimates, no sign-up required.",
   alternates: { canonical: "/tools" },
 };
 
@@ -20,7 +20,7 @@ export default function ToolsHubPage() {
               Free Financial Tools
             </span>
             <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-              7 Calculators to Plan Your Next Money Move
+              8 Calculators to Plan Your Next Money Move
             </h1>
             <p className="text-sm sm:text-base text-slate-300">
               Instant, no-obligation estimates across loans, insurance, home upgrades, and more — each with its own
