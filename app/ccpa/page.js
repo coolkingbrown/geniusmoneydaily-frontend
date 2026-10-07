@@ -3,6 +3,7 @@ import LegalPageShell from "@/components/LegalPageShell";
 import OptOutForm from "@/components/OptOutForm";
 
 export const metadata = {
+  alternates: { canonical: "/ccpa" },
   title: "Do Not Sell or Share My Personal Information | GeniusMoneyDaily",
   description: "Submit a request to opt out of the sale or sharing of your personal information.",
 };

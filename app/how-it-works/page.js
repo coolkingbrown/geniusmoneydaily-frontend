@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/how-it-works" },
   title: "How It Works | GeniusMoneyDaily",
   description: "How GeniusMoneyDaily matches readers with financial offers and partners.",
 };

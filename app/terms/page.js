@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms & Conditions | GeniusMoneyDaily",
   description: "The terms and conditions governing use of GeniusMoneyDaily.",
 };

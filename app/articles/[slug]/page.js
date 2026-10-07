@@ -6,6 +6,7 @@ import { getArticleBySlug } from "@/lib/blogArticles";
 import ArticleBody from "@/components/ArticleBody";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import OfferCTA from "@/components/OfferCTA";
+import { verticalLabel } from "@/lib/verticals";
 
 export async function generateMetadata({ params }) {
   const article = await getArticleBySlug(params.slug);
@@ -17,10 +18,12 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
+    alternates: { canonical: `/articles/${article.slug}` },
     openGraph: {
       title,
       description,
       type: "article",
+      url: `/articles/${article.slug}`,
       images: article.featured_image_url ? [article.featured_image_url] : undefined,
     },
   };
@@ -71,7 +74,7 @@ export default async function BlogArticlePage({ params }) {
           </Link>
           {article.vertical && (
             <span className="bg-brand-teal/15 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-              {article.vertical.replace(/-/g, " ")}
+              {verticalLabel(article.vertical)}
             </span>
           )}
         </div>

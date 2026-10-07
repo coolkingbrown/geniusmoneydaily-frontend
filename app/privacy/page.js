@@ -2,6 +2,7 @@ import LegalPageShell from "@/components/LegalPageShell";
 import PrivacyPolicyContent from "@/components/PrivacyPolicyContent";
 
 export const metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy | GeniusMoneyDaily",
   description: "How GeniusMoneyDaily collects, uses, and protects your personal information.",
 };

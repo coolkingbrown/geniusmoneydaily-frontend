@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import NewsletterGate from "@/components/NewsletterGate";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://www.geniusmoneydaily.com"),
+  metadataBase: new URL(SITE_URL),
   title: "GeniusMoneyDaily.com | High-Authority Financial Magazine & Daily Insights",
   description: "Smart, data-backed financial insights delivered daily. Expert analysis on loans, credit score hacks, high-yield savings, real estate trends, and tax planning.",
   keywords: ["financial magazine", "loans", "credit score", "high yield savings", "real estate mortgages", "tax strategy", "GeniusMoneyDaily"],
@@ -22,7 +23,7 @@ export const metadata = {
   openGraph: {
     title: "GeniusMoneyDaily.com | Smart Financial Insights, Delivered Daily",
     description: "Data-backed mortgage strategies, high-yield rate updates, tax optimization, and credit hacks.",
-    url: "https://www.geniusmoneydaily.com",
+    url: SITE_URL,
     siteName: "GeniusMoneyDaily",
     locale: "en_US",
     type: "website",

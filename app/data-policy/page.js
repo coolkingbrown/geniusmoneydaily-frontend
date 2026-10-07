@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/data-policy" },
   title: "Data Policy | GeniusMoneyDaily",
   description: "How GeniusMoneyDaily handles, stores, and shares user data.",
 };

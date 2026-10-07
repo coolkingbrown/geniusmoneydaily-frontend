@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/editorial-guidelines" },
   title: "Editorial Guidelines | GeniusMoneyDaily",
   description: "GeniusMoneyDaily editorial standards, fact-checking policies, and journalistic principles.",
 };

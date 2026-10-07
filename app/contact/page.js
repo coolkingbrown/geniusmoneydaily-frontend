@@ -3,6 +3,7 @@ import { ArrowLeft, Mail, Phone } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 
 export const metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact Us | GeniusMoneyDaily",
   description: "Get in touch with the GeniusMoneyDaily editorial, advertising, and support teams.",
 };

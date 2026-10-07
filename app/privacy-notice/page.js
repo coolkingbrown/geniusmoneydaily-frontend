@@ -2,6 +2,7 @@ import LegalPageShell from "@/components/LegalPageShell";
 import PrivacyPolicyContent from "@/components/PrivacyPolicyContent";
 
 export const metadata = {
+  alternates: { canonical: "/privacy-notice" },
   title: "Privacy Notice | GeniusMoneyDaily",
   description: "State-specific consumer privacy disclosures for GeniusMoneyDaily readers.",
 };

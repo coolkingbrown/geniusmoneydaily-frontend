@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/accessibility" },
   title: "Accessibility Notice | GeniusMoneyDaily",
   description: "GeniusMoneyDaily's commitment to digital accessibility.",
 };
