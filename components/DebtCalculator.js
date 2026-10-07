@@ -5,12 +5,15 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { calcMonthlyPayment, formatCurrency } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
 
-export default function DebtCalculator() {
-  const [totalDebt, setTotalDebt] = useState(20000);
-  const [cardApr, setCardApr] = useState(24.99);
-  const [loanApr, setLoanApr] = useState(13.99);
-  const [termMonths, setTermMonths] = useState(48);
+const TOOL_SLUG = "debt-consolidation-calculator";
+
+export default function DebtCalculator({ initialValues = {} }) {
+  const [totalDebt, setTotalDebt] = useState(initialValues.amount ?? 20000);
+  const [cardApr, setCardApr] = useState(initialValues.cardApr ?? 24.99);
+  const [loanApr, setLoanApr] = useState(initialValues.loanApr ?? 13.99);
+  const [termMonths, setTermMonths] = useState(initialValues.term ?? 48);
 
   const { cardInterest, loanInterest, savings } = useMemo(() => {
     const cardPayment = calcMonthlyPayment(totalDebt, cardApr, termMonths);
@@ -45,7 +48,15 @@ export default function DebtCalculator() {
         <CalcResult label="Total Savings" value={formatCurrency(savings)} emphasis />
       </div>
 
-      <CalcCTA href="https://safebetloans.com/" label="See Consolidation Loan Offers →" />
+      <p className="text-[11px] text-slate-400">
+        This comparison assumes both debts are repaid on the same fixed term shown above. It is an illustrative
+        estimate, not a guaranteed rate or savings.
+      </p>
+
+      <CalcCTA
+        href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LOANS, TOOL_SLUG)}
+        label="See Consolidation Loan Offers →"
+      />
     </div>
   );
 }

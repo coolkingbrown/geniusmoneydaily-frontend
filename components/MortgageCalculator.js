@@ -8,11 +8,11 @@ import { calcMonthlyPayment, formatCurrency } from "@/lib/calculators";
 
 const FALLBACK_LIVE_RATE = 6.42;
 
-export default function MortgageCalculator() {
-  const [homePrice, setHomePrice] = useState(400000);
-  const [downPaymentPct, setDownPaymentPct] = useState(20);
-  const [currentRate, setCurrentRate] = useState(7.25);
-  const [termYears, setTermYears] = useState(30);
+export default function MortgageCalculator({ initialValues = {} }) {
+  const [homePrice, setHomePrice] = useState(initialValues.amount ?? 400000);
+  const [downPaymentPct, setDownPaymentPct] = useState(initialValues.down ?? 20);
+  const [currentRate, setCurrentRate] = useState(initialValues.rate ?? 7.25);
+  const [termYears, setTermYears] = useState(initialValues.term ?? 30);
   const [liveRate, setLiveRate] = useState(FALLBACK_LIVE_RATE);
   const [rateLoading, setRateLoading] = useState(true);
 

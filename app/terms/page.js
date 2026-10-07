@@ -9,7 +9,7 @@ export default function TermsPage() {
   return (
     <LegalPageShell title="GeniusMoneyDaily Terms and Conditions" updatedLabel="Effective: June 13, 2022">
       <p>
-        By accessing the geniusmoneydaily.com website (the &quot;Website&quot;), operated by Humble Leads Group, DBA
+        By accessing the www.geniusmoneydaily.com website (the &quot;Website&quot;), operated by Humble Leads Group, DBA
         GeniusMoneyDaily (&quot;GeniusMoneyDaily,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), you
         agree to be bound by these Terms and Conditions (the &quot;Terms&quot;) and all policies and guidelines
         incorporated by reference.

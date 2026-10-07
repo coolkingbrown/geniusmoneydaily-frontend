@@ -35,7 +35,7 @@ export default function NewsletterGate() {
         {/* Badge */}
         <div className="inline-flex items-center gap-1.5 bg-brand-navy/10 text-brand-navy px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-widest">
           <Mail className="w-3.5 h-3.5 text-brand-navy" />
-          <span>JOIN 125,000+ DAILY READERS</span>
+          <span>JOIN OUR DAILY READERS</span>
         </div>
 
         {/* Headline */}

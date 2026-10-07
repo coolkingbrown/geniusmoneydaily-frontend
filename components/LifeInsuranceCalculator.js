@@ -5,14 +5,17 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { formatCurrency } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
+
+const TOOL_SLUG = "life-insurance-calculator";
 
 const INCOME_REPLACEMENT_MULTIPLIER = 10;
 const PER_DEPENDENT_BUFFER = 100000;
 
-export default function LifeInsuranceCalculator() {
-  const [income, setIncome] = useState(75000);
-  const [debt, setDebt] = useState(250000);
-  const [dependents, setDependents] = useState(2);
+export default function LifeInsuranceCalculator({ initialValues = {} }) {
+  const [income, setIncome] = useState(initialValues.income ?? 75000);
+  const [debt, setDebt] = useState(initialValues.debt ?? 250000);
+  const [dependents, setDependents] = useState(initialValues.dependents ?? 2);
 
   const recommendedCoverage = useMemo(() => {
     const incomeVal = Number(income) || 0;
@@ -43,7 +46,10 @@ export default function LifeInsuranceCalculator() {
         thumb, not personalized advice.
       </p>
 
-      <CalcCTA href="http://safebetlife.com/" label="Calculate Life Insurance Rates →" />
+      <CalcCTA
+        href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LIFE, TOOL_SLUG)}
+        label="Calculate Life Insurance Rates →"
+      />
     </div>
   );
 }

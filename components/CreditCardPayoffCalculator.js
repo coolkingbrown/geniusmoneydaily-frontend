@@ -5,15 +5,22 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { calcPayoffMonths, formatCurrency, formatMonths } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
+
+const TOOL_SLUG = "credit-card-payoff-calculator";
 
 // Reference rate used purely for the "what a fixed consolidation loan would
 // cost instead" comparison, shown clearly in the UI.
 const CONSOLIDATION_APR = 12.99;
 
-export default function CreditCardPayoffCalculator() {
-  const [balance, setBalance] = useState(8000);
-  const [apr, setApr] = useState(22.99);
-  const [payment, setPayment] = useState(250);
+// Balance at or above which we also surface a debt-relief option alongside
+// the consolidation-loan CTA.
+const DEBT_RELIEF_THRESHOLD = 10000;
+
+export default function CreditCardPayoffCalculator({ initialValues = {} }) {
+  const [balance, setBalance] = useState(initialValues.balance ?? 8000);
+  const [apr, setApr] = useState(initialValues.apr ?? 22.99);
+  const [payment, setPayment] = useState(initialValues.payment ?? 250);
 
   const result = useMemo(() => {
     const payoffMonths = calcPayoffMonths(balance, apr, payment);
@@ -31,6 +38,8 @@ export default function CreditCardPayoffCalculator() {
 
     return { payoffMonths, totalInterest, consolidationSavings };
   }, [balance, apr, payment]);
+
+  const showDebtReliefCta = (Number(balance) || 0) >= DEBT_RELIEF_THRESHOLD;
 
   return (
     <div className="space-y-8">
@@ -56,7 +65,8 @@ export default function CreditCardPayoffCalculator() {
             />
           </div>
           <p className="text-[11px] text-slate-400">
-            Consolidation comparison assumes a fixed {CONSOLIDATION_APR}% loan at the same monthly payment.
+            Consolidation comparison assumes a fixed {CONSOLIDATION_APR}% loan at the same monthly payment. This is
+            an illustrative estimate, not a guaranteed rate or savings.
           </p>
         </>
       ) : (
@@ -66,7 +76,19 @@ export default function CreditCardPayoffCalculator() {
         </div>
       )}
 
-      <CalcCTA href="https://safebetloans.com/" label="Lower My Credit Card APR →" />
+      <div className="flex flex-col sm:flex-row gap-3">
+        <CalcCTA
+          href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LOANS, TOOL_SLUG)}
+          label="Lower My Credit Card APR →"
+        />
+        {showDebtReliefCta && (
+          <CalcCTA
+            href={buildMoneyAidLink(OFFER_SLUGS.DEBTHUNCH, TOOL_SLUG)}
+            label="Explore Debt Relief Options →"
+            variant="secondary"
+          />
+        )}
+      </div>
     </div>
   );
 }

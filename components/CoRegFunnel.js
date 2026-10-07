@@ -24,7 +24,7 @@ import LogoIcon from "@/components/LogoIcon";
 const DEFAULT_OFFER_URLS = {
   loans: "https://safebetloans.com/",
   auto: "https://safebetauto.com/",
-  life: "http://safebetlife.com/",
+  life: "https://safebetlife.com/",
 };
 
 // Survey/offer pathing config for Step 3. `isOffer` questions log an

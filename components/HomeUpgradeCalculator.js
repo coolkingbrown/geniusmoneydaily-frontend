@@ -5,12 +5,16 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { formatCurrency } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
+
+const TOOL_SLUG = "home-improvement-cost-calculator";
 
 const PROJECT_TABS = [
   { id: "roofing", label: "Roofing" },
   { id: "windows", label: "Windows" },
   { id: "solar", label: "Solar" },
 ];
+const VALID_TABS = new Set(PROJECT_TABS.map((t) => t.id));
 
 // Rough industry-average heuristics for a quick estimate — not a quote.
 const COST_PER_SQFT_ROOFING = 8.5;
@@ -20,15 +24,17 @@ const SOLAR_OFFSET_RATE = 0.9;
 const SOLAR_SYSTEM_COST_MULTIPLIER = 5; // x annual power bill
 const FEDERAL_SOLAR_TAX_CREDIT_RATE = 0.3;
 
-export default function HomeUpgradeCalculator() {
-  const [activeTab, setActiveTab] = useState("roofing");
+export default function HomeUpgradeCalculator({ initialValues = {} }) {
+  const [activeTab, setActiveTab] = useState(
+    VALID_TABS.has(initialValues.tab) ? initialValues.tab : "roofing"
+  );
 
-  const [sqFootage, setSqFootage] = useState(2000);
-  const [roofAge, setRoofAge] = useState(15);
+  const [sqFootage, setSqFootage] = useState(initialValues.sqft ?? 2000);
+  const [roofAge, setRoofAge] = useState(initialValues.roofAge ?? 15);
 
-  const [windowCount, setWindowCount] = useState(12);
+  const [windowCount, setWindowCount] = useState(initialValues.windows ?? 12);
 
-  const [monthlyBill, setMonthlyBill] = useState(180);
+  const [monthlyBill, setMonthlyBill] = useState(initialValues.bill ?? 180);
 
   const roofing = useMemo(() => {
     const cost = sqFootage * COST_PER_SQFT_ROOFING;
@@ -108,7 +114,10 @@ export default function HomeUpgradeCalculator() {
         Estimates are for illustrative purposes only and vary by region, materials, and installer.
       </p>
 
-      <CalcCTA href="https://www.homeadvisor.com/" label="Compare Local Contractor Rates & Incentives →" />
+      <CalcCTA
+        href={buildMoneyAidLink(OFFER_SLUGS.HOME_ADVISOR, TOOL_SLUG)}
+        label="Compare Local Contractor Rates & Incentives →"
+      />
     </div>
   );
 }

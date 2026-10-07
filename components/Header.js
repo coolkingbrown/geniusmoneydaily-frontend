@@ -5,7 +5,20 @@ import Link from "next/link";
 import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import LogoIcon from "@/components/LogoIcon";
 
-const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42 };
+const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42, fedRateAsOf: null, mortgage30yAsOf: null };
+
+function formatAsOfDate(dateStr) {
+  if (!dateStr) return null;
+  try {
+    return new Date(`${dateStr}T00:00:00`).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return null;
+  }
+}
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +40,8 @@ export default function Header() {
           setRates({
             fedRate: typeof data.fedRate === "number" ? data.fedRate : FALLBACK_RATES.fedRate,
             mortgage30y: typeof data.mortgage30y === "number" ? data.mortgage30y : FALLBACK_RATES.mortgage30y,
+            fedRateAsOf: data.fedRateAsOf || null,
+            mortgage30yAsOf: data.mortgage30yAsOf || null,
           });
         }
       } catch (err) {
@@ -39,6 +54,11 @@ export default function Header() {
       cancelled = true;
     };
   }, []);
+
+  // Show the more recent of the two observation dates, if either is available.
+  const asOfLabel = formatAsOfDate(
+    [rates.fedRateAsOf, rates.mortgage30yAsOf].filter(Boolean).sort().reverse()[0]
+  );
 
   const navItems = [
     { name: "Loans", href: "/articles/category/loans" },
@@ -67,12 +87,12 @@ export default function Header() {
             </span>
             <span>Fed Rate: <strong className="text-white">{rates.fedRate.toFixed(2)}%</strong></span>
             <span>30Y Fixed Mortgage: <strong className="text-white">{rates.mortgage30y.toFixed(2)}%</strong></span>
-            <span>Avg High-Yield APY: <strong className="text-brand-teal font-bold">5.15%</strong></span>
+            {asOfLabel && <span className="text-slate-400">As of {asOfLabel}</span>}
           </div>
           <div className="flex items-center space-x-4 text-slate-400 text-[11px]">
-            <span className="flex items-center">
+            <Link href="/editorial-guidelines" className="flex items-center hover:text-white transition-colors">
               <ShieldCheck className="w-3.5 h-3.5 mr-1 text-brand-teal" /> Verified Financial Journalism
-            </span>
+            </Link>
             <span>Updated Daily</span>
           </div>
         </div>

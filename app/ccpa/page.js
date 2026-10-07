@@ -18,7 +18,7 @@ export default function CcpaPage() {
         states are not entitled to use the following form. For additional discussion of your privacy rights, please
         visit our Privacy Policy at{" "}
         <Link href="/privacy" className="text-brand-teal font-semibold hover:underline">
-          geniusmoneydaily.com/privacy-policy
+          www.geniusmoneydaily.com/privacy-policy
         </Link>
         .
       </p>

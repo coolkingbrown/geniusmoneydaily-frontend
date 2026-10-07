@@ -5,11 +5,14 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { calcMonthlyPayment, formatCurrency } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
 
-export default function PersonalLoanCalculator() {
-  const [amount, setAmount] = useState(15000);
-  const [apr, setApr] = useState(11.5);
-  const [termMonths, setTermMonths] = useState(48);
+const TOOL_SLUG = "personal-loan-calculator";
+
+export default function PersonalLoanCalculator({ initialValues = {} }) {
+  const [amount, setAmount] = useState(initialValues.amount ?? 15000);
+  const [apr, setApr] = useState(initialValues.apr ?? 11.5);
+  const [termMonths, setTermMonths] = useState(initialValues.term ?? 48);
 
   const { monthlyPayment, totalCost, totalInterest } = useMemo(() => {
     const payment = calcMonthlyPayment(amount, apr, termMonths);
@@ -40,7 +43,10 @@ export default function PersonalLoanCalculator() {
         <CalcResult label="Total Cost" value={formatCurrency(totalCost)} />
       </div>
 
-      <CalcCTA href="https://safebetloans.com/" label="See Pre-Qualified Loan Offers →" />
+      <CalcCTA
+        href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LOANS, TOOL_SLUG)}
+        label="See Pre-Qualified Loan Offers →"
+      />
     </div>
   );
 }

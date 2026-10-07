@@ -5,16 +5,19 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { formatCurrency, clamp } from "@/lib/calculators";
+import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
+
+const TOOL_SLUG = "auto-insurance-calculator";
 
 const BASE_SAVINGS_RATE = 0.15;
 const NEWER_VEHICLE_BONUS = 0.03;
 const OFF_PEAK_AGE_PENALTY = 0.03;
 const NEWER_VEHICLE_THRESHOLD_YEARS = 5;
 
-export default function AutoInsuranceCalculator() {
-  const [vehicleYear, setVehicleYear] = useState(2020);
-  const [driverAge, setDriverAge] = useState(35);
-  const [currentPremium, setCurrentPremium] = useState(1400);
+export default function AutoInsuranceCalculator({ initialValues = {} }) {
+  const [vehicleYear, setVehicleYear] = useState(initialValues.year ?? 2020);
+  const [driverAge, setDriverAge] = useState(initialValues.age ?? 35);
+  const [currentPremium, setCurrentPremium] = useState(initialValues.premium ?? 1400);
 
   const estimatedAnnualSavings = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -45,7 +48,10 @@ export default function AutoInsuranceCalculator() {
         <CalcResult label="Estimated Annual Savings" value={formatCurrency(estimatedAnnualSavings)} emphasis />
       </div>
 
-      <CalcCTA href="https://safebetauto.com/" label="Compare Matched Auto Quotes →" />
+      <CalcCTA
+        href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_AUTO, TOOL_SLUG)}
+        label="Compare Matched Auto Quotes →"
+      />
     </div>
   );
 }

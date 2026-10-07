@@ -4,7 +4,7 @@ export default function PrivacyPolicyContent() {
   return (
     <>
       <p>
-        This Privacy Policy applies to the geniusmoneydaily.com website, operated by Humble Leads Group, DBA
+        This Privacy Policy applies to the www.geniusmoneydaily.com website, operated by Humble Leads Group, DBA
         GeniusMoneyDaily.
       </p>
 
@@ -38,7 +38,7 @@ export default function PrivacyPolicyContent() {
       <div>
         <h2 className="font-extrabold text-brand-navy mb-1">Contact Us</h2>
         <p>
-          geniusmoneydaily.com,{" "}
+          www.geniusmoneydaily.com,{" "}
           <a href="mailto:info@geniusmoneydaily.com" className="text-brand-teal font-semibold hover:underline">
             info@geniusmoneydaily.com
           </a>
