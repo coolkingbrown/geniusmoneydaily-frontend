@@ -2,6 +2,7 @@ import LegalPageShell from "@/components/LegalPageShell";
 import UnsubscribeForm from "@/components/UnsubscribeForm";
 
 export const metadata = {
+  alternates: { canonical: "/unsubscribe" },
   title: "Unsubscribe | GeniusMoneyDaily",
   description: "Unsubscribe from GeniusMoneyDaily email communications.",
 };

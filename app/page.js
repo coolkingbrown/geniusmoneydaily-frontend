@@ -3,7 +3,11 @@ import MagazineGrid from "@/components/MagazineGrid";
 import ToolsSection from "@/components/ToolsSection";
 import { getGeniusMoneyDailyArticles } from "@/lib/getGeniusMoneyDailyArticles";
 
-export const revalidate = 60; // Revalidate content every 60 seconds
+export const revalidate = 60;
+
+export const metadata = {
+  alternates: { canonical: "/" },
+}; // Revalidate content every 60 seconds
 
 export default async function HomePage() {
   // Fetch articles filtered specifically for GeniusMoneyDaily via Supabase inner join

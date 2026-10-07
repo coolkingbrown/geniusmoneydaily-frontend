@@ -10,6 +10,7 @@ import {
 } from "@/lib/emailTemplates";
 
 export const metadata = {
+  robots: { index: false, follow: false },
   title: "Email Template Library | GeniusMoneyDaily Admin",
   robots: { index: false, follow: false },
 };

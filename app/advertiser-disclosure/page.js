@@ -1,6 +1,7 @@
 import LegalPageShell from "@/components/LegalPageShell";
 
 export const metadata = {
+  alternates: { canonical: "/advertiser-disclosure" },
   title: "Advertiser Disclosure | GeniusMoneyDaily",
   description: "GeniusMoneyDaily advertiser disclosure and partner relationship details.",
 };

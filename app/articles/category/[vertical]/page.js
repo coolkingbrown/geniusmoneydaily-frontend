@@ -12,6 +12,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${label} Articles | GeniusMoneyDaily`,
     description: `Latest ${label.toLowerCase()} news, rate updates, and strategies from GeniusMoneyDaily.`,
+    alternates: { canonical: `/articles/category/${params.vertical}` },
   };
 }
 

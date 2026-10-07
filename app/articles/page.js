@@ -4,6 +4,7 @@ import Pagination from "@/components/Pagination";
 import { getPublishedArticles } from "@/lib/blogArticles";
 
 export const metadata = {
+  alternates: { canonical: "/articles" },
   title: "Articles | GeniusMoneyDaily",
   description:
     "Browse the latest financial insights, rate updates, and money-saving strategies from GeniusMoneyDaily.",
