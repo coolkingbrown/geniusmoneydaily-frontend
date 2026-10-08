@@ -5,7 +5,7 @@ import Link from "next/link";
 import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
-import { calcMonthlyPayment, simulateLoanWithLumpSum, formatCurrency } from "@/lib/calculators";
+import { formatCurrency } from "@/lib/calculators";
 
 const MODES = [
   { id: "standard", label: "Standard Budget" },
@@ -43,11 +43,6 @@ const GOAL_LABELS = {
   travel: { goal: "Trip Budget Goal", months: "Months Until Trip", noun: "trip" },
 };
 
-// Illustrative only — this tool has no live rate feed for personal loans
-// (unlike the Mortgage calculator's FRED-sourced rate). Shown clearly as an
-// estimate, not a quoted or guaranteed rate.
-const LOAN_APR = 11.5;
-const LOAN_TERM_MONTHS = 24;
 const WEEKS_PER_MONTH = 52 / 12;
 
 export default function BudgetCalculator({ initialValues = {} }) {
@@ -63,9 +58,6 @@ export default function BudgetCalculator({ initialValues = {} }) {
   const [goalAmount, setGoalAmount] = useState(initialValues.goalAmount ?? 1200);
   const [goalMonths, setGoalMonths] = useState(initialValues.goalMonths ?? 4);
   const [emergencyFlags, setEmergencyFlags] = useState({});
-  const [repayWithRefund, setRepayWithRefund] = useState(false);
-  const [refundAmount, setRefundAmount] = useState(1000);
-  const [refundMonth, setRefundMonth] = useState(3);
 
   const updateCategory = (key, value) => {
     setCategoryAmounts((prev) => ({ ...prev, [key]: value }));
@@ -121,19 +113,6 @@ export default function BudgetCalculator({ initialValues = {} }) {
       reducedGoalAmount,
     };
   }, [categoryAmounts, mode, goalAmount, goalMonths, income, emergencyFlags]);
-
-  const loanMonthlyPayment = useMemo(
-    () => calcMonthlyPayment(loanAmount, LOAN_APR, LOAN_TERM_MONTHS),
-    [loanAmount]
-  );
-  const loanTotalInterest = loanMonthlyPayment * LOAN_TERM_MONTHS - loanAmount;
-
-  const lumpSumResult = useMemo(() => {
-    if (!repayWithRefund || loanAmount <= 0) return null;
-    return simulateLoanWithLumpSum(loanAmount, LOAN_APR, LOAN_TERM_MONTHS, Number(refundAmount) || 0, Number(refundMonth) || 0);
-  }, [repayWithRefund, loanAmount, refundAmount, refundMonth]);
-
-  const interestSaved = lumpSumResult ? Math.max(0, loanTotalInterest - lumpSumResult.totalInterest) : 0;
 
   const goalLabels = GOAL_LABELS[mode];
   const showGapPanel = mode !== "standard" && isShortfall;
@@ -246,47 +225,12 @@ export default function BudgetCalculator({ initialValues = {} }) {
               <h4 className="text-sm font-extrabold text-brand-navy">Cover It With a Personal Loan</h4>
               <p className="text-sm text-slate-600">
                 A personal loan could cover the {formatCurrency(loanAmount)} gap in your budget over the next{" "}
-                {goalMonths} months, without cutting your plans. Here's the cost at an illustrative {LOAN_APR}% APR
-                over {LOAN_TERM_MONTHS} months — not a live or quoted rate.
+                {goalMonths} months, without cutting your plans. This isn't a loan offer or an approval — rates and
+                terms are shown once you compare real options.
               </p>
 
-              <div className="grid grid-cols-2 gap-3">
-                <CalcResult label="Monthly Payment" value={formatCurrency(loanMonthlyPayment, 2)} />
-                <CalcResult label="Total Interest" value={formatCurrency(loanTotalInterest)} />
-              </div>
-
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                <input
-                  type="checkbox"
-                  checked={repayWithRefund}
-                  onChange={(e) => setRepayWithRefund(e.target.checked)}
-                  className="accent-brand-teal"
-                />
-                Planning to repay with your tax refund?
-              </label>
-
-              {repayWithRefund && (
-                <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <CalcInput label="Refund Amount" prefix="$" value={refundAmount} onChange={setRefundAmount} step={100} />
-                    <CalcInput label="Repay in Month" suffix="mo" value={refundMonth} onChange={setRefundMonth} step={1} min={1} />
-                  </div>
-                  {lumpSumResult && (
-                    <p className="text-sm text-slate-600">
-                      Applying {formatCurrency(refundAmount)} in month {refundMonth} would pay this off in about{" "}
-                      {lumpSumResult.monthsToPayoff} months instead of {LOAN_TERM_MONTHS}, cutting total interest to
-                      about {formatCurrency(lumpSumResult.totalInterest)} — roughly {formatCurrency(interestSaved)} less.
-                    </p>
-                  )}
-                  <p className="text-[11px] text-slate-400">
-                    Refunds can arrive later or smaller than expected — treat this as a possibility, not something to
-                    count on. If you plan to repay early, look for a loan with no prepayment penalty.
-                  </p>
-                </div>
-              )}
-
               <CalcCTA
-                href={`/tools/personal-loan-calculator?amount=${loanAmount}&apr=${LOAN_APR}&term=${LOAN_TERM_MONTHS}`}
+                href={`/tools/personal-loan-calculator?amount=${loanAmount}`}
                 label="Compare Personal Loan Options →"
                 internal
               />
