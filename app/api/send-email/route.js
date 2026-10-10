@@ -12,6 +12,9 @@ import {
 } from "@/lib/emailTemplates";
 
 const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || "hello@geniusmoneydaily.com";
+// Randy gets a copy of every contact-form acknowledgement so he sees inbound
+// contact requests as they come in, not just the submitter.
+const CONTACT_NOTIFICATION_CC = process.env.CONTACT_NOTIFICATION_CC || "Randy@humbleleads.com";
 
 export async function POST(request) {
   let body;
@@ -73,6 +76,7 @@ export async function POST(request) {
   try {
     await sgMail.send({
       to,
+      ...(type === "contact_acknowledgement" ? { cc: CONTACT_NOTIFICATION_CC } : {}),
       from: FROM_EMAIL,
       subject: emailContent.subject,
       html: emailContent.html,
