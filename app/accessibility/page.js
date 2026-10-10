@@ -30,7 +30,7 @@ export default function AccessibilityPage() {
       <div>
         <h2 className="font-extrabold text-brand-navy mb-1">Contact Information</h2>
         <p>
-          Phone: (971) 377-2608 | Email:{" "}
+          Email:{" "}
           <a href="mailto:contact@geniusmoneydaily.com" className="text-brand-teal font-semibold hover:underline">
             contact@geniusmoneydaily.com
           </a>

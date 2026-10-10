@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Info } from "lucide-react";
 import { recordLeadPreference } from "@/lib/leadPreferences";
 import { US_STATES } from "@/lib/usStates";
 import HoneypotField from "@/components/HoneypotField";
@@ -17,10 +17,41 @@ const EMPTY_FORM = {
   phone: "",
 };
 
+const FIELD_LABELS = {
+  email: "Email",
+  firstName: "First name",
+  lastName: "Last name",
+  address: "Address",
+  city: "City",
+  state: "State",
+  zip: "Zip code",
+  phone: "Phone",
+};
+
+const REQUIRED_FIELDS = ["email", "firstName", "lastName", "address", "city", "state", "zip", "phone"];
+
+// Lightweight client-side check so a missing or malformed field surfaces as
+// a clear, app-styled message instead of a browser-native validation
+// tooltip that's easy to miss (the form uses noValidate for this reason).
+function validateOptOutForm(form) {
+  for (const field of REQUIRED_FIELDS) {
+    if (!form[field] || !form[field].trim()) {
+      return `${FIELD_LABELS[field]} is required.`;
+    }
+  }
+  if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+    return "Please enter a valid email address.";
+  }
+  if (!/^\d{5}$/.test(form.zip.trim())) {
+    return "Zip code must be exactly 5 digits.";
+  }
+  return null;
+}
+
 export default function OptOutForm() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [website, setWebsite] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+  const [status, setStatus] = useState("idle"); // idle | submitting | success | invalid | error
   const [errorMessage, setErrorMessage] = useState("");
   const [gpcDetected, setGpcDetected] = useState(false);
 
@@ -34,8 +65,16 @@ export default function OptOutForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("submitting");
     setErrorMessage("");
+
+    const validationError = validateOptOutForm(form);
+    if (validationError) {
+      setErrorMessage(validationError);
+      setStatus("invalid");
+      return;
+    }
+
+    setStatus("submitting");
 
     try {
       await recordLeadPreference(
@@ -77,50 +116,54 @@ export default function OptOutForm() {
 
   return (
     <div className="space-y-5">
-      <p className="text-sm font-bold text-red-600">
-        {gpcDetected
-          ? "An Opt-Out Preference Signal has been detected."
-          : "No Opt-Out Preference Signal has been detected."}
-      </p>
+      <div className="flex items-start gap-2 bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600">
+        <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+        <p>
+          {gpcDetected
+            ? "Your browser sent us a Global Privacy Control signal."
+            : "Your browser did not send a Global Privacy Control signal."}{" "}
+          Either way, submitting the form below is itself a valid opt-out request — no browser signal is required.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <HoneypotField value={website} onChange={(e) => setWebsite(e.target.value)} />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Email</label>
-            <input type="email" required value={form.email} onChange={updateField("email")} className={inputClass} />
+            <input type="email" value={form.email} onChange={updateField("email")} className={inputClass} />
           </div>
           <div>
             <label className={labelClass}>Phone</label>
-            <input type="tel" required value={form.phone} onChange={updateField("phone")} className={inputClass} />
+            <input type="tel" value={form.phone} onChange={updateField("phone")} className={inputClass} />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>First Name</label>
-            <input type="text" required value={form.firstName} onChange={updateField("firstName")} className={inputClass} />
+            <input type="text" value={form.firstName} onChange={updateField("firstName")} className={inputClass} />
           </div>
           <div>
             <label className={labelClass}>Last Name</label>
-            <input type="text" required value={form.lastName} onChange={updateField("lastName")} className={inputClass} />
+            <input type="text" value={form.lastName} onChange={updateField("lastName")} className={inputClass} />
           </div>
         </div>
 
         <div>
           <label className={labelClass}>Address</label>
-          <input type="text" required value={form.address} onChange={updateField("address")} className={inputClass} />
+          <input type="text" value={form.address} onChange={updateField("address")} className={inputClass} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className={labelClass}>City</label>
-            <input type="text" required value={form.city} onChange={updateField("city")} className={inputClass} />
+            <input type="text" value={form.city} onChange={updateField("city")} className={inputClass} />
           </div>
           <div>
             <label className={labelClass}>State</label>
-            <select required value={form.state} onChange={updateField("state")} className={inputClass}>
+            <select value={form.state} onChange={updateField("state")} className={inputClass}>
               <option value="" disabled>
                 Select a state
               </option>
@@ -135,9 +178,7 @@ export default function OptOutForm() {
             <label className={labelClass}>Zip</label>
             <input
               type="text"
-              required
               inputMode="numeric"
-              pattern="[0-9]{5}"
               maxLength={5}
               value={form.zip}
               onChange={updateField("zip")}
@@ -153,6 +194,10 @@ export default function OptOutForm() {
         >
           {status === "submitting" ? "Submitting..." : "Submit"}
         </button>
+
+        {status === "invalid" && (
+          <p className="text-xs font-semibold text-red-600">{errorMessage}</p>
+        )}
 
         {status === "error" && (
           <p className="text-xs font-semibold text-red-600">

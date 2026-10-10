@@ -31,7 +31,7 @@ export default function CcpaPage() {
       <div className="pt-8 mt-8 border-t border-slate-100 text-xs text-slate-400 leading-relaxed">
         <p>
           Users with disabilities (and any other users) who wish to opt-out of the sale and/or sharing of their
-          personal information can also contact us by calling us at: (971) 377-2608; emailing us at:{" "}
+          personal information can also contact us by emailing us at:{" "}
           <a href="mailto:contact@geniusmoneydaily.com" className="text-brand-teal font-semibold hover:underline">
             contact@geniusmoneydaily.com
           </a>
