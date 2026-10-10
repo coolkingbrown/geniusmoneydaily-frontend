@@ -15,9 +15,10 @@ import {
   Phone,
   Sparkles,
 } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
+import { createLead, updateLeadSurvey } from "@/lib/leadsApi";
 import { sendTransactionalEmail } from "@/lib/sendEmail";
 import LogoIcon from "@/components/LogoIcon";
+import HoneypotField from "@/components/HoneypotField";
 
 // Owned-property fallbacks used when an offer question has no matching
 // override in the article's offer_links (see resolveOfferUrl below).
@@ -138,8 +139,11 @@ export default function CoRegFunnel({ offerLinks = [] }) {
   const [step, setStep] = useState("email"); // email | pii | survey | complete
   const [email, setEmail] = useState("");
   const [pii, setPii] = useState(EMPTY_PII);
+  const [website, setWebsite] = useState("");
   const [firstName, setFirstName] = useState("");
   const [leadId, setLeadId] = useState(null);
+  const [leadToken, setLeadToken] = useState(null);
+  const [surveyTokenExpired, setSurveyTokenExpired] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [surveyResponses, setSurveyResponses] = useState({});
   const [selectedOffers, setSelectedOffers] = useState([]);
@@ -175,14 +179,10 @@ export default function CoRegFunnel({ offerLinks = [] }) {
     setSubmitting(true);
     setError("");
 
-    // Generate the id client-side so we don't need a post-insert SELECT
-    // (avoids relying on RLS read access just to get the new row back).
-    const newLeadId = crypto.randomUUID();
-
     try {
-      const { error: insertError } = await supabase.from("leads").insert([
+      const result = await createLead(
+        "funnel",
         {
-          id: newLeadId,
           email,
           first_name: pii.firstName,
           last_name: pii.lastName,
@@ -190,22 +190,17 @@ export default function CoRegFunnel({ offerLinks = [] }) {
           zip_code: pii.zipCode,
           dob: pii.dob,
           phone: pii.phone,
-          created_at: new Date().toISOString(),
         },
-      ]);
+        website
+      );
 
-      if (insertError) {
-        console.error("Error creating lead:", insertError);
-        setError("Something went wrong saving your info. Please try again.");
-        return;
-      }
-
-      setLeadId(newLeadId);
+      setLeadId(result.lead_id);
+      setLeadToken(result.token);
       setFirstName(pii.firstName);
       setStep("survey");
     } catch (err) {
       console.error("Lead submission error:", err);
-      setError("Something went wrong saving your info. Please try again.");
+      setError(err.message || "Something went wrong saving your info. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -222,41 +217,21 @@ export default function CoRegFunnel({ offerLinks = [] }) {
     });
   };
 
-  const logOfferInteraction = (question, resolvedUrl) => {
-    if (!leadId) return;
-    supabase
-      .from("lead_offer_interactions")
-      .insert([
-        {
-          lead_id: leadId,
-          question_key: question.key,
-          offer_url: resolvedUrl,
-          interaction_type: "accepted_yes",
-          created_at: new Date().toISOString(),
-        },
-      ])
-      .then(({ error: interactionError }) => {
-        if (interactionError) {
-          console.error("Error logging offer interaction:", interactionError);
-        }
-      });
-  };
-
   const handleAnswer = (question, value) => {
     const updatedResponses = { ...surveyResponses, [question.key]: value };
     setSurveyResponses(updatedResponses);
 
-    // Optimistic write: UI advances immediately, Supabase syncs in the background.
-    if (leadId) {
-      supabase
-        .from("leads")
-        .update({ survey_responses: updatedResponses })
-        .eq("id", leadId)
-        .then(({ error: updateError }) => {
-          if (updateError) {
-            console.error("Error saving survey response:", updateError);
-          }
-        });
+    // Optimistic write: UI advances immediately, the API syncs in the
+    // background. Per the API contract, if the per-lead token has expired
+    // the funnel still finishes — it just stops saving further answers,
+    // rather than creating a second lead or blocking the user.
+    if (leadId && leadToken && !surveyTokenExpired) {
+      updateLeadSurvey(leadId, leadToken, { [question.key]: value }).catch((err) => {
+        if (err.status === 401) {
+          setSurveyTokenExpired(true);
+        }
+        console.error("Error saving survey response:", err);
+      });
     }
 
     goToNextQuestion();
@@ -268,7 +243,6 @@ export default function CoRegFunnel({ offerLinks = [] }) {
     if (resolvedUrl) {
       window.open(resolvedUrl, "_blank", "noopener,noreferrer");
     }
-    logOfferInteraction(question, resolvedUrl);
     setSelectedOffers((prev) => [
       ...prev,
       { offer_name: question.offerName || question.headline, offer_url: resolvedUrl },
@@ -331,6 +305,8 @@ export default function CoRegFunnel({ offerLinks = [] }) {
 
       {step === "pii" && (
         <form onSubmit={handlePiiSubmit} className="space-y-5 animate-fade-in">
+          <HoneypotField value={website} onChange={(e) => setWebsite(e.target.value)} />
+
           <div>
             <h3 className="text-xl font-extrabold text-slate-900">Almost There! Complete Your Profile</h3>
             <p className="text-xs text-slate-500">We use this to match you with pre-qualified offers.</p>
@@ -433,7 +409,15 @@ export default function CoRegFunnel({ offerLinks = [] }) {
             </div>
           </div>
 
-          {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
+          {error && (
+            <p className="text-xs font-semibold text-red-600">
+              {error} If this keeps happening, email{" "}
+              <a href="mailto:contact@geniusmoneydaily.com" className="underline">
+                contact@geniusmoneydaily.com
+              </a>
+              .
+            </p>
+          )}
 
           <button
             type="submit"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { recordLeadPreference } from "@/lib/leadPreferences";
 import { sendTransactionalEmail } from "@/lib/sendEmail";
+import HoneypotField from "@/components/HoneypotField";
 
 const REASONS = ["General Inquiry", "Advertising / Partnerships", "Editorial / Media", "Compliance / Legal"];
 
@@ -19,28 +20,30 @@ const EMPTY_FORM = {
 
 export default function ContactForm() {
   const [form, setForm] = useState(EMPTY_FORM);
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+  const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("submitting");
+    setErrorMessage("");
 
     try {
       await recordLeadPreference(
-        form.email,
+        "contact",
         {
-          source: "contact_form",
-          reason_to_connect: form.reasonToConnect,
-          message: form.message,
-          business_name: form.businessName,
-        },
-        {
+          email: form.email,
           first_name: form.firstName,
           last_name: form.lastName,
           phone: form.phone,
-        }
+          business_name: form.businessName,
+          reason_to_connect: form.reasonToConnect,
+          message: form.message,
+        },
+        website
       );
 
       // Fire-and-forget: don't let the acknowledgement email delay the success state.
@@ -54,6 +57,7 @@ export default function ContactForm() {
       setStatus("success");
       setForm(EMPTY_FORM);
     } catch (err) {
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
       setStatus("error");
     }
   };
@@ -78,6 +82,8 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <HoneypotField value={website} onChange={(e) => setWebsite(e.target.value)} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>First Name</label>
@@ -136,7 +142,13 @@ export default function ContactForm() {
       </button>
 
       {status === "error" && (
-        <p className="text-xs font-semibold text-red-600">Something went wrong. Please try again.</p>
+        <p className="text-xs font-semibold text-red-600">
+          {errorMessage || "Something went wrong. Please try again."} You can also email us directly at{" "}
+          <a href="mailto:contact@geniusmoneydaily.com" className="underline">
+            contact@geniusmoneydaily.com
+          </a>
+          .
+        </p>
       )}
     </form>
   );

@@ -3,24 +3,26 @@
 import { useState } from "react";
 import { Mail, CheckCircle2 } from "lucide-react";
 import { recordLeadPreference } from "@/lib/leadPreferences";
+import HoneypotField from "@/components/HoneypotField";
 
 export default function UnsubscribeForm() {
   const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) return;
     setStatus("submitting");
+    setErrorMessage("");
 
     try {
-      await recordLeadPreference(email, {
-        unsubscribed: true,
-        unsubscribed_at: new Date().toISOString(),
-      });
+      await recordLeadPreference("unsubscribe", { email }, website);
       setStatus("success");
       setEmail("");
     } catch (err) {
+      setErrorMessage(err.message || "Something went wrong.");
       setStatus("error");
     }
   };
@@ -38,6 +40,8 @@ export default function UnsubscribeForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
+      <HoneypotField value={website} onChange={(e) => setWebsite(e.target.value)} />
+
       <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider">
         Email Address
       </label>
@@ -62,7 +66,13 @@ export default function UnsubscribeForm() {
       </button>
 
       {status === "error" && (
-        <p className="text-xs font-semibold text-red-600">Something went wrong. Please try again.</p>
+        <p className="text-xs font-semibold text-red-600">
+          {errorMessage || "Something went wrong."} Please try again, or if this keeps happening, email{" "}
+          <a href="mailto:contact@geniusmoneydaily.com" className="underline">
+            contact@geniusmoneydaily.com
+          </a>{" "}
+          and we&apos;ll unsubscribe you directly.
+        </p>
       )}
     </form>
   );
