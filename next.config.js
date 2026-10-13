@@ -8,7 +8,7 @@ const nextConfig = {
         // 307 (not 301/308) so these can be repointed later without
         // browsers/CDNs caching the redirect permanently.
         source: "/s/:code",
-        destination: "https://moneyaid-ops.vercel.app/s/:code",
+        destination: "https://moneyaid-ops.vercel.app/s/gmd/:code",
         permanent: false,
       },
     ];
