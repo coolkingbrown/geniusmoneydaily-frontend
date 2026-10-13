@@ -7,6 +7,7 @@ import ArticleBody from "@/components/ArticleBody";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
 import OfferCTA from "@/components/OfferCTA";
 import { verticalLabel } from "@/lib/verticals";
+import { splitAfterQuickAnswer } from "@/lib/insertVideoCard";
 
 export async function generateMetadata({ params }) {
   const article = await getArticleBySlug(params.slug);
@@ -58,12 +59,51 @@ export default async function BlogArticlePage({ params }) {
       })
     : null;
 
+  const hasVideo = Boolean(article.video_youtube_id || article.video_mp4_url);
+
+  // Reuses the exact same matcher ArticleBody uses internally, so this
+  // stays in sync with whatever ArticleBody actually decides — rather than
+  // guessing independently whether the body has a Quick Answer section.
+  const hasQuickAnswer = hasVideo ? splitAfterQuickAnswer(article.body_content || "").found : false;
+
+  const video = hasVideo
+    ? {
+        youtubeId: article.video_youtube_id,
+        mp4Url: article.video_mp4_url,
+        posterUrl: article.video_poster_url,
+        title: article.title,
+      }
+    : undefined;
+
+  const videoJsonLd = hasVideo && hasQuickAnswer
+    ? {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        name: article.title,
+        description: article.meta_description || article.excerpt || article.title,
+        thumbnailUrl: article.video_poster_url ? [article.video_poster_url] : undefined,
+        uploadDate: article.video_published_at || article.published_at || undefined,
+        duration: article.video_duration_seconds ? `PT${article.video_duration_seconds}S` : undefined,
+        embedUrl: article.video_youtube_id
+          ? `https://www.youtube-nocookie.com/embed/${article.video_youtube_id}`
+          : undefined,
+        contentUrl: article.video_mp4_url || undefined,
+        transcript: article.video_transcript || undefined,
+      }
+    : null;
+
   return (
     <div className={`min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 ${hasStickyOffer ? "pb-28 lg:pb-10" : ""}`}>
       {jsonLd && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      {videoJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
         />
       )}
 
@@ -109,7 +149,7 @@ export default async function BlogArticlePage({ params }) {
               </div>
             )}
 
-            <ArticleBody html={article.body_content} />
+            <ArticleBody html={article.body_content} video={video} />
 
             <ArticleDisclaimer sources={article.sources} disclaimerNote={article.disclaimer_note} />
 

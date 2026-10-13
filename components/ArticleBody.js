@@ -1,6 +1,8 @@
 import sanitizeHtml from "sanitize-html";
 import { splitHtmlWithToolEmbeds } from "@/lib/parseToolEmbeds";
+import { splitAfterQuickAnswer } from "@/lib/insertVideoCard";
 import EmbeddedTool from "@/components/EmbeddedTool";
+import ArticleVideoCard from "@/components/ArticleVideoCard";
 
 // Attribute names a <div data-gmd-tool="..."> embed marker may carry, across
 // every tool's paramKeys (see lib/toolsConfig.js). Multi-word keys use
@@ -53,19 +55,46 @@ const SANITIZE_OPTIONS = {
   allowedSchemes: ["http", "https", "mailto"],
 };
 
-export default function ArticleBody({ html }) {
+function renderToolEmbedSegments(html, keyPrefix) {
+  const segments = splitHtmlWithToolEmbeds(html);
+  return segments.map((segment, i) =>
+    segment.type === "tool" ? (
+      <EmbeddedTool key={`${keyPrefix}-tool-${i}`} slug={segment.slug} rawParams={segment.rawParams} />
+    ) : (
+      <div key={`${keyPrefix}-html-${i}`} dangerouslySetInnerHTML={{ __html: segment.content }} />
+    )
+  );
+}
+
+// `video` is optional: { youtubeId, mp4Url, posterUrl, title }. When present
+// and the article's HTML contains a "Quick Answer" section, the video card
+// is inserted as its own full-width block directly after it. When absent,
+// or when no Quick Answer section is found, rendering is identical to the
+// no-video case — a single pass through the tool-embed splitter, same as
+// before this feature existed.
+export default function ArticleBody({ html, video }) {
   const clean = sanitizeHtml(html || "", SANITIZE_OPTIONS);
-  const segments = splitHtmlWithToolEmbeds(clean);
+
+  if (!video) {
+    return <div className="article-body">{renderToolEmbedSegments(clean, "body")}</div>;
+  }
+
+  const { before, after, found } = splitAfterQuickAnswer(clean);
+
+  if (!found) {
+    return <div className="article-body">{renderToolEmbedSegments(clean, "body")}</div>;
+  }
 
   return (
     <div className="article-body">
-      {segments.map((segment, i) =>
-        segment.type === "tool" ? (
-          <EmbeddedTool key={`tool-${i}`} slug={segment.slug} rawParams={segment.rawParams} />
-        ) : (
-          <div key={`html-${i}`} dangerouslySetInnerHTML={{ __html: segment.content }} />
-        )
-      )}
+      {renderToolEmbedSegments(before, "before")}
+      <ArticleVideoCard
+        youtubeId={video.youtubeId}
+        mp4Url={video.mp4Url}
+        posterUrl={video.posterUrl}
+        title={video.title}
+      />
+      {renderToolEmbedSegments(after, "after")}
     </div>
   );
 }
