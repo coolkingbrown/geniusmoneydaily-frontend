@@ -1,8 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import NewsletterGate from "@/components/NewsletterGate";
-import Footer from "@/components/Footer";
+import SiteChrome from "@/components/SiteChrome";
 import { SITE_URL } from "@/lib/site";
 
 const inter = Inter({
@@ -34,10 +32,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <NewsletterGate />
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
