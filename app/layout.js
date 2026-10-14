@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import { SITE_URL } from "@/lib/site";
+import { getFredRates } from "@/lib/fredRates";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,11 +29,19 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // ISR-style revalidate (not no-store): keeps every other page on the
+  // site statically generatable instead of forcing full dynamic rendering
+  // site-wide, while still refreshing this shared Data Cache entry at most
+  // hourly. This is what makes the ticker's live values show up in the
+  // initial server-rendered HTML — what crawlers, link previews, and
+  // slow/no-JS connections actually see — instead of only after hydration.
+  const rates = await getFredRates({ next: { revalidate: 3600 } });
+
   return (
     <html lang="en" className={`${inter.variable}`}>
       <body className="flex flex-col min-h-screen">
-        <SiteChrome>{children}</SiteChrome>
+        <SiteChrome rates={rates}>{children}</SiteChrome>
       </body>
     </html>
   );

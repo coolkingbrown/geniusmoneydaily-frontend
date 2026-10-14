@@ -15,7 +15,7 @@ import Footer from "@/components/Footer";
 // large a restructure.
 const NO_CHROME_PATHS = ["/links"];
 
-export default function SiteChrome({ children }) {
+export default function SiteChrome({ children, rates }) {
   const pathname = usePathname();
   const hideChrome = NO_CHROME_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 
@@ -25,7 +25,7 @@ export default function SiteChrome({ children }) {
 
   return (
     <>
-      <Header />
+      <Header rates={rates} />
       <main className="flex-grow">{children}</main>
       <NewsletterGate />
       <Footer />

@@ -5,7 +5,15 @@ import Link from "next/link";
 import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import LogoIcon from "@/components/LogoIcon";
 
-const FALLBACK_RATES = { fedRate: 5.25, mortgage30y: 6.42, fedRateAsOf: null, mortgage30yAsOf: null };
+// No hardcoded numeric rates here — only a neutral "not available yet"
+// shape, used if the server-rendered `rates` prop is ever missing. The
+// ticker shows "—" instead of a number whenever source !== "fred" rather
+// than ever displaying a fabricated-looking rate.
+const UNAVAILABLE_RATES = { fedRate: null, mortgage30y: null, fedRateAsOf: null, mortgage30yAsOf: null, source: "unavailable" };
+
+function formatRate(value, source) {
+  return source === "fred" && typeof value === "number" ? `${value.toFixed(2)}%` : "—";
+}
 
 function formatAsOfDate(dateStr) {
   if (!dateStr) return null;
@@ -20,16 +28,23 @@ function formatAsOfDate(dateStr) {
   }
 }
 
-export default function Header() {
+export default function Header({ rates: initialRates }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [rates, setRates] = useState(FALLBACK_RATES);
+  // Seeded from the server-rendered value (see app/layout.js) so the
+  // initial HTML already shows live data — what crawlers, link previews,
+  // and slow/no-JS connections see — instead of a placeholder that only
+  // gets replaced after hydration.
+  const [rates, setRates] = useState(initialRates || UNAVAILABLE_RATES);
   const [lifestyleDropdownOpen, setLifestyleDropdownOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
+    // Keeps the ticker fresh during a long-lived tab session without
+    // requiring a full page reload; the layout's own hourly revalidate
+    // already means this will usually just confirm the same values.
     async function loadRates() {
       try {
         const res = await fetch("/api/fred-rates");
@@ -38,14 +53,15 @@ export default function Header() {
 
         if (!cancelled) {
           setRates({
-            fedRate: typeof data.fedRate === "number" ? data.fedRate : FALLBACK_RATES.fedRate,
-            mortgage30y: typeof data.mortgage30y === "number" ? data.mortgage30y : FALLBACK_RATES.mortgage30y,
+            fedRate: typeof data.fedRate === "number" ? data.fedRate : null,
+            mortgage30y: typeof data.mortgage30y === "number" ? data.mortgage30y : null,
             fedRateAsOf: data.fedRateAsOf || null,
             mortgage30yAsOf: data.mortgage30yAsOf || null,
+            source: data.source || "unavailable",
           });
         }
       } catch (err) {
-        console.warn("Could not load live rates, using fallback values:", err);
+        console.warn("Could not refresh live rates, keeping last known values:", err);
       }
     }
 
@@ -85,8 +101,8 @@ export default function Header() {
             <span className="flex items-center text-brand-teal font-semibold">
               <TrendingUp className="w-3.5 h-3.5 mr-1" /> DAILY FINANCIAL PULSE
             </span>
-            <span>Fed Rate: <strong className="text-white">{rates.fedRate.toFixed(2)}%</strong></span>
-            <span>30Y Fixed Mortgage: <strong className="text-white">{rates.mortgage30y.toFixed(2)}%</strong></span>
+            <span>Fed Rate: <strong className="text-white">{formatRate(rates.fedRate, rates.source)}</strong></span>
+            <span>30Y Fixed Mortgage: <strong className="text-white">{formatRate(rates.mortgage30y, rates.source)}</strong></span>
             {asOfLabel && <span className="text-slate-400">As of {asOfLabel}</span>}
           </div>
           <div className="flex items-center space-x-4 text-slate-400 text-[11px]">
