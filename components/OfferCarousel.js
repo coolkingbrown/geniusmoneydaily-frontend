@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
+import { POSTPROGO_BASE_URL } from "@/lib/postProGo";
 
-const OFFERS_API_URL = "https://moneyaid-ops.vercel.app/api/public/offers?site=gmd";
+const OFFERS_API_URL = `${POSTPROGO_BASE_URL}/api/public/offers?site=gmd`;
 
 export default function OfferCarousel() {
   const [offers, setOffers] = useState([]);
