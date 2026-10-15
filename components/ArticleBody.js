@@ -1,6 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 import { splitHtmlWithToolEmbeds } from "@/lib/parseToolEmbeds";
 import { splitAfterQuickAnswer } from "@/lib/insertVideoCard";
+import { enhanceTables } from "@/lib/tableEnhancements";
 import EmbeddedTool from "@/components/EmbeddedTool";
 import ArticleVideoCard from "@/components/ArticleVideoCard";
 
@@ -73,7 +74,7 @@ function renderToolEmbedSegments(html, keyPrefix) {
 // no-video case — a single pass through the tool-embed splitter, same as
 // before this feature existed.
 export default function ArticleBody({ html, video }) {
-  const clean = sanitizeHtml(html || "", SANITIZE_OPTIONS);
+  const clean = enhanceTables(sanitizeHtml(html || "", SANITIZE_OPTIONS));
 
   if (!video) {
     return <div className="article-body">{renderToolEmbedSegments(clean, "body")}</div>;

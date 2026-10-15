@@ -127,3 +127,52 @@
   max-width: 100%;
   height: auto;
 }
+
+/* Comparison tables — the outer wrapper owns the teal border, radius, and
+   corner-clipping; the inner wrapper owns horizontal scroll, so the two
+   don't fight each other (overflow:hidden for rounded corners vs.
+   overflow-x:auto for scrolling can't both live on one element cleanly). */
+.article-body .table-scroll-outer {
+  border: 2px solid var(--color-teal);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.article-body .table-scroll-inner {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.article-body thead th {
+  background: var(--color-navy);
+  color: #ffffff;
+  font-weight: 700;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.article-body tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.article-body tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.article-body tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.article-body td.price-cell {
+  color: var(--color-teal);
+  font-weight: 700;
+}

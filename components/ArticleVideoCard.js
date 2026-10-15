@@ -27,7 +27,7 @@ export default function ArticleVideoCard({ youtubeId, mp4Url, posterUrl, title }
           {playing ? (
             youtubeId ? (
               <iframe
-                src={`${YOUTUBE_EMBED_BASE}/${youtubeId}?autoplay=1`}
+                src={`${YOUTUBE_EMBED_BASE}/${youtubeId}?autoplay=1&rel=0`}
                 title={`Video summary: ${title}`}
                 className="absolute inset-0 w-full h-full"
                 allow="autoplay; encrypted-media; picture-in-picture"
@@ -41,6 +41,7 @@ export default function ArticleVideoCard({ youtubeId, mp4Url, posterUrl, title }
                 autoPlay
                 playsInline
                 preload="none"
+                loop={false}
                 className="absolute inset-0 w-full h-full object-cover"
               >
                 Your browser does not support embedded video.

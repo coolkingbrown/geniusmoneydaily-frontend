@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, TrendingUp, Menu, X, ShieldCheck, ChevronRight, ChevronDown } from "lucide-react";
 import LogoIcon from "@/components/LogoIcon";
@@ -32,6 +32,9 @@ export default function Header({ rates: initialRates }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchSubmitted, setSearchSubmitted] = useState(false);
   // Seeded from the server-rendered value (see app/layout.js) so the
   // initial HTML already shows live data — what crawlers, link previews,
   // and slow/no-JS connections see — instead of a placeholder that only
@@ -70,6 +73,49 @@ export default function Header({ rates: initialRates }) {
       cancelled = true;
     };
   }, []);
+
+  // Shared by the debounced effect below and the immediate Enter/submit
+  // handler, so both paths run the exact same query logic.
+  const runSearch = useCallback(async (trimmed) => {
+    if (trimmed.length < 2) {
+      setSearchResults([]);
+      setSearchSubmitted(false);
+      setSearchLoading(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(trimmed)}`);
+      if (!res.ok) throw new Error(`Search request failed: ${res.status}`);
+      const data = await res.json();
+      setSearchResults(Array.isArray(data.results) ? data.results : []);
+    } catch (err) {
+      console.warn("Search failed:", err);
+      setSearchResults([]);
+    } finally {
+      setSearchLoading(false);
+      setSearchSubmitted(true);
+    }
+  }, []);
+
+  // Debounced as the user types; triggers at 2+ characters.
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (trimmed.length < 2) {
+      setSearchResults([]);
+      setSearchSubmitted(false);
+      return;
+    }
+
+    const timer = setTimeout(() => runSearch(trimmed), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, runSearch]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    runSearch(searchQuery.trim());
+  };
 
   // Show the more recent of the two observation dates, if either is available.
   const asOfLabel = formatAsOfDate(
@@ -222,22 +268,53 @@ export default function Header({ rates: initialRates }) {
       {/* Quick Search Overlay Drawer */}
       {searchOpen && (
         <div className="bg-slate-100 border-t border-b border-slate-200 py-3 px-4 transition-all">
-          <div className="max-w-3xl mx-auto flex items-center gap-2">
-            <Search className="w-5 h-5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search mortgage rates, credit cards, high-yield savings, tax tips..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
-              autoFocus
-            />
-            <button
-              onClick={() => setSearchOpen(false)}
-              className="text-xs font-bold text-slate-500 hover:text-slate-800 px-2 py-1"
-            >
-              Close
-            </button>
+          <div className="max-w-3xl mx-auto space-y-2">
+            <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
+              <Search className="w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search mortgage rates, credit cards, high-yield savings, tax tips..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                className="text-xs font-bold text-slate-500 hover:text-slate-800 px-2 py-1"
+              >
+                Close
+              </button>
+            </form>
+
+            {searchQuery.trim().length >= 2 && (
+              <div className="bg-white border border-slate-200 rounded-lg shadow-sm max-h-80 overflow-y-auto divide-y divide-slate-100">
+                {searchLoading ? (
+                  <p className="px-4 py-3 text-sm text-slate-500">Searching...</p>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((article) => (
+                    <Link
+                      key={article.slug}
+                      href={`/articles/${article.slug}`}
+                      onClick={() => setSearchOpen(false)}
+                      className="block px-4 py-3 hover:bg-slate-50 transition-colors"
+                    >
+                      <p className="text-sm font-bold text-slate-900 leading-snug">{article.title}</p>
+                      {article.excerpt && (
+                        <p className="text-xs text-slate-500 leading-relaxed line-clamp-2 mt-0.5">
+                          {article.excerpt}
+                        </p>
+                      )}
+                    </Link>
+                  ))
+                ) : searchSubmitted ? (
+                  <p className="px-4 py-3 text-sm text-slate-500">
+                    No articles found for &quot;{searchQuery.trim()}&quot;.
+                  </p>
+                ) : null}
+              </div>
+            )}
           </div>
         </div>
       )}
