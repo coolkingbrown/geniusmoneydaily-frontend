@@ -4,11 +4,11 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        // Short links: /s/:code -> MoneyAid Ops' own short-link redirector.
+        // Short links: /s/:code -> PostProGo's short-link redirector.
         // 307 (not 301/308) so these can be repointed later without
         // browsers/CDNs caching the redirect permanently.
         source: "/s/:code",
-        destination: "https://moneyaid-ops.vercel.app/s/gmd/:code",
+        destination: "https://www.postprogo.com/s/gmd/:code",
         permanent: false,
       },
     ];
