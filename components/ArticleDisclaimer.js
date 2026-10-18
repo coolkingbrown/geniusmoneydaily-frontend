@@ -1,4 +1,4 @@
-export default function ArticleDisclaimer({ sources = [], disclaimerNote }) {
+export default function ArticleDisclaimer({ sources = [], disclaimerNote, sourcesHeading = "Editorial Standards & Sources" }) {
   const hasSources = Array.isArray(sources) && sources.length > 0;
   const hasDisclaimer = Boolean(disclaimerNote);
 
@@ -9,7 +9,7 @@ export default function ArticleDisclaimer({ sources = [], disclaimerNote }) {
       {hasSources && (
         <div className="space-y-2">
           <h3 className="text-xs font-extrabold text-slate-500 uppercase tracking-wider">
-            Editorial Standards &amp; Sources
+            {sourcesHeading}
           </h3>
           <ul className="space-y-1">
             {sources.map((source, index) => (

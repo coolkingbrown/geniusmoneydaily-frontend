@@ -3,11 +3,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { getArticleBySlug } from "@/lib/blogArticles";
+import { getGuestAuthorById } from "@/lib/guestAuthors";
 import ArticleBody from "@/components/ArticleBody";
+import ArticleByline from "@/components/ArticleByline";
 import ArticleDisclaimer from "@/components/ArticleDisclaimer";
+import GuestArticleFrame from "@/components/GuestArticleFrame";
+import GuestDisclosureNote from "@/components/GuestDisclosureNote";
 import OfferCTA from "@/components/OfferCTA";
 import { verticalLabel } from "@/lib/verticals";
 import { splitAfterQuickAnswer } from "@/lib/insertVideoCard";
+import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({ params }) {
   const article = await getArticleBySlug(params.slug);
@@ -19,7 +24,10 @@ export async function generateMetadata({ params }) {
   return {
     title,
     description,
-    alternates: { canonical: `/articles/${article.slug}` },
+    // Syndicated guest articles point canonical at the author's own
+    // original post; everything else (including exclusive guest pieces)
+    // self-canonicals as before.
+    alternates: { canonical: article.canonical_url || `/articles/${article.slug}` },
     openGraph: {
       title,
       description,
@@ -57,6 +65,23 @@ export default async function BlogArticlePage({ params }) {
         day: "numeric",
         year: "numeric",
       })
+    : null;
+
+  const isGuest = Boolean(article.is_guest);
+  const guestAuthor = isGuest ? await getGuestAuthorById(article.guest_author_id) : null;
+  const showGuestByline = isGuest && Boolean(guestAuthor);
+
+  const frameDisclosures = Array.isArray(article.frame_disclosures) ? article.frame_disclosures : [];
+
+  const authorJsonLd = showGuestByline
+    ? {
+        "@context": "https://schema.org",
+        "@type": guestAuthor.author_type === "organization" ? "Organization" : "Person",
+        "@id": `${SITE_URL}/authors/${guestAuthor.slug}`,
+        name: guestAuthor.name,
+        ...(guestAuthor.image_url ? { image: guestAuthor.image_url } : {}),
+        ...(guestAuthor.summary ? { description: guestAuthor.summary } : {}),
+      }
     : null;
 
   const hasVideo = Boolean(article.video_youtube_id || article.video_mp4_url);
@@ -106,6 +131,12 @@ export default async function BlogArticlePage({ params }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }}
         />
       )}
+      {authorJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(authorJsonLd) }}
+        />
+      )}
 
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
@@ -130,10 +161,14 @@ export default async function BlogArticlePage({ params }) {
                 <p className="text-lg text-slate-600 font-medium leading-relaxed">{article.excerpt}</p>
               )}
 
-              {formattedDate && (
-                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold pt-4 border-t border-slate-100">
-                  <Calendar className="w-3.5 h-3.5 text-brand-teal" /> Published {formattedDate}
-                </div>
+              {showGuestByline ? (
+                <ArticleByline author={guestAuthor} publishedAt={article.published_at} />
+              ) : (
+                formattedDate && (
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold pt-4 border-t border-slate-100">
+                    <Calendar className="w-3.5 h-3.5 text-brand-teal" /> Published {formattedDate}
+                  </div>
+                )
               )}
             </div>
 
@@ -151,7 +186,23 @@ export default async function BlogArticlePage({ params }) {
 
             <ArticleBody html={article.body_content} video={video} />
 
-            <ArticleDisclaimer sources={article.sources} disclaimerNote={article.disclaimer_note} />
+            {/* Sources stay in their normal spot for every article; the
+                disclaimer *note* is suppressed here for guest articles —
+                GuestDisclosureNote replaces it at the end instead. Guest
+                content isn't fact-checked by GMD, so its sources block
+                drops the "Editorial Standards" wording entirely. */}
+            <ArticleDisclaimer
+              sources={article.sources}
+              disclaimerNote={isGuest ? null : article.disclaimer_note}
+              sourcesHeading={isGuest ? "Sources" : undefined}
+            />
+
+            {isGuest && (
+              <>
+                <GuestArticleFrame disclosures={frameDisclosures} author={guestAuthor} />
+                <GuestDisclosureNote isPaid={Boolean(guestAuthor?.paid_placement)} />
+              </>
+            )}
 
             <OfferCTA offers={offers} zone="inline" />
             <OfferCTA offers={offers} zone="footer-cta" />
