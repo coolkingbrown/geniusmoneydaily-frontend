@@ -5,7 +5,6 @@ import { getGuestAuthorBySlug } from "@/lib/guestAuthors";
 import { getArticlesByGuestAuthorId } from "@/lib/blogArticles";
 import ArticleCard from "@/components/ArticleCard";
 import AuthorAvatar from "@/components/AuthorAvatar";
-import CalcCTA from "@/components/calculators/CalcCTA";
 import { SITE_URL } from "@/lib/site";
 
 export async function generateMetadata({ params }) {
@@ -75,10 +74,6 @@ export default async function GuestAuthorPage({ params }) {
                 <p className="text-sm text-slate-600 leading-relaxed">{author.summary}</p>
               )}
             </div>
-
-            {author.link_url && (
-              <CalcCTA href={author.link_url} label={`More from ${author.name} →`} variant="secondary" />
-            )}
           </div>
         </div>
 

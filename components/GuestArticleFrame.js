@@ -1,6 +1,6 @@
 import sanitizeHtml from "sanitize-html";
-import CalcCTA from "@/components/calculators/CalcCTA";
 import AuthorAvatar from "@/components/AuthorAvatar";
+import GuestAuthorCTA from "@/components/GuestAuthorCTA";
 
 const NOTE_CLASS = "text-xs text-slate-500 italic leading-relaxed";
 
@@ -30,7 +30,10 @@ function originallyPublishedLabel(item) {
 }
 
 // Renders one frame_disclosures[] entry by its `kind`. Unknown kinds render
-// nothing rather than guessing a fallback presentation.
+// nothing rather than guessing a fallback presentation. The "cta" case here
+// only fires for the rare edge case of a cta item with no author to anchor
+// it to (see below) — the normal single-cta-plus-author case never reaches
+// it, since that cta is extracted and relocated into the author box.
 function FrameDisclosureItem({ item }) {
   switch (item.kind) {
     case "tax_relief_note":
@@ -49,7 +52,7 @@ function FrameDisclosureItem({ item }) {
     }
 
     case "cta":
-      return item.text && item.href ? <CalcCTA href={item.href} label={item.text} /> : null;
+      return <GuestAuthorCTA href={item.href} label={item.text} />;
 
     case "originally_published": {
       const label = originallyPublishedLabel(item);
@@ -75,18 +78,26 @@ function FrameDisclosureItem({ item }) {
 
 // Page-frame content below the author's text — never inserted into
 // body_content. Order is: frame_disclosures in the order MoneyAid sent
-// them (which includes any cta/originally_published entries wherever they
-// placed them), then the author box.
+// them, except the single "cta" entry (when there's an author to show) is
+// pulled out of that sequence and rendered inside the author box instead,
+// in place of what used to be a separate "More from [Author]" button —
+// same destination, one button instead of two. If there's a cta item but
+// no author box to put it in, it stays in its normal sequential position
+// rather than being dropped.
 export default function GuestArticleFrame({ disclosures, author }) {
   const items = Array.isArray(disclosures) ? disclosures : [];
 
-  if (items.length === 0 && !author) return null;
+  const ctaIndex = author ? items.findIndex((d) => d?.kind === "cta") : -1;
+  const authorBoxCta = ctaIndex !== -1 ? items[ctaIndex] : null;
+  const sequentialItems = authorBoxCta ? items.filter((_, i) => i !== ctaIndex) : items;
+
+  if (sequentialItems.length === 0 && !author) return null;
 
   return (
     <div className="space-y-4">
-      {items.length > 0 && (
+      {sequentialItems.length > 0 && (
         <div className="space-y-3">
-          {items.map((item, i) => (
+          {sequentialItems.map((item, i) => (
             <FrameDisclosureItem key={i} item={item} />
           ))}
         </div>
@@ -99,7 +110,7 @@ export default function GuestArticleFrame({ disclosures, author }) {
             <p className="font-extrabold text-slate-900">{author.name}</p>
             {author.summary && <p className="text-sm text-slate-500 leading-relaxed">{author.summary}</p>}
           </div>
-          <CalcCTA href={author.link_url} label={`More from ${author.name} →`} variant="secondary" />
+          {authorBoxCta && <GuestAuthorCTA href={authorBoxCta.href} label={authorBoxCta.text} />}
         </div>
       )}
     </div>

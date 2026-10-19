@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import ArticleCard from "@/components/ArticleCard";
 import AuthorAvatar from "@/components/AuthorAvatar";
-import CalcCTA from "@/components/calculators/CalcCTA";
 import { MOCK_AUTHOR, MOCK_SYNDICATED_ARTICLE } from "../mockData";
 
 export const metadata = {
@@ -35,7 +34,6 @@ export default function GuestDemoAuthorPage() {
               {author.title_line && <p className="text-sm font-semibold text-slate-500">{author.title_line}</p>}
               {author.summary && <p className="text-sm text-slate-600 leading-relaxed">{author.summary}</p>}
             </div>
-            {author.link_url && <CalcCTA href={author.link_url} label={`More from ${author.name} →`} variant="secondary" />}
           </div>
         </div>
 
