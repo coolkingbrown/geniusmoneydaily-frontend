@@ -41,9 +41,30 @@ export default function ArticleCard({ article }) {
           <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 flex-1">{article.excerpt}</p>
         )}
 
-        {formattedDate && (
-          <div className="pt-2 mt-auto border-t border-slate-100 text-[11px] font-semibold text-slate-400">
-            {formattedDate}
+        {(article.guestAuthor || formattedDate) && (
+          <div className="pt-2 mt-auto border-t border-slate-100 flex items-center justify-between gap-2">
+            {article.guestAuthor ? (
+              <Link
+                href={`/authors/${article.guestAuthor.slug}`}
+                className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-brand-navy transition-colors min-w-0"
+              >
+                {article.guestAuthor.image_url ? (
+                  <Image
+                    src={article.guestAuthor.image_url}
+                    alt={article.guestAuthor.name}
+                    width={16}
+                    height={16}
+                    className="rounded-full object-cover flex-shrink-0"
+                  />
+                ) : null}
+                <span className="truncate">By {article.guestAuthor.name}</span>
+              </Link>
+            ) : (
+              <span />
+            )}
+            {formattedDate && (
+              <span className="text-[11px] font-semibold text-slate-400 flex-shrink-0">{formattedDate}</span>
+            )}
           </div>
         )}
       </div>
