@@ -125,6 +125,7 @@ export default function Header({ rates: initialRates }) {
   const navItems = [
     { name: "Loans", href: "/articles/category/loans" },
     { name: "Credit", href: "/articles/category/credit" },
+    { name: "Debt Relief", href: "/articles/category/debt-relief" },
     { name: "Savings", href: "/articles/category/savings" },
     { name: "Real Estate", href: "/articles/category/real-estate" },
     { name: "Taxes", href: "/articles/category/taxes" },
