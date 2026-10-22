@@ -67,6 +67,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/articles/category/debt-relief" className="hover:text-white transition-colors">
+                  Debt Relief & Consolidation
+                </Link>
+              </li>
+              <li>
                 <Link href="/articles/category/savings" className="hover:text-white transition-colors">
                   High-Yield Savings
                 </Link>

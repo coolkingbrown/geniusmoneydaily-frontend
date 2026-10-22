@@ -14,12 +14,13 @@ export const metadata = {
   alternates: { canonical: "/links" },
 };
 
-// Matches the 6 top-level categories shown in the site's main nav
+// Matches the top-level categories shown in the site's main nav
 // (components/Header.js) exactly — the bio page is meant to feel like a
 // natural extension of it, not a separate, bigger category list.
 const CATEGORIES = [
   { name: "Loans", href: "/articles/category/loans" },
   { name: "Credit", href: "/articles/category/credit" },
+  { name: "Debt Relief", href: "/articles/category/debt-relief" },
   { name: "Savings", href: "/articles/category/savings" },
   { name: "Real Estate", href: "/articles/category/real-estate" },
   { name: "Taxes", href: "/articles/category/taxes" },
