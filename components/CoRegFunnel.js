@@ -17,8 +17,16 @@ import {
 } from "lucide-react";
 import { createLead, updateLeadSurvey } from "@/lib/leadsApi";
 import { sendTransactionalEmail } from "@/lib/sendEmail";
+import { POSTPROGO_BASE_URL } from "@/lib/postProGo";
 import LogoIcon from "@/components/LogoIcon";
 import HoneypotField from "@/components/HoneypotField";
+
+// Same feed components/OfferCarousel.js reads — used here only as a fallback
+// for isOffer questions whose category has no owned-property DEFAULT_OFFER_URLS
+// entry (currently just "Debt relief"/TurboDebt), so MoneyAid can repoint
+// which offer answers a category by changing its `category` field, with no
+// GMD code change needed.
+const OFFERS_API_URL = `${POSTPROGO_BASE_URL}/api/public/offers?site=gmd`;
 
 // Owned-property fallbacks used when an offer question has no matching
 // override in the article's offer_links (see resolveOfferUrl below).
@@ -61,6 +69,14 @@ const SURVEY_QUESTIONS = [
       { label: "Fair (630-689)", value: "fair" },
       { label: "Poor (300-629)", value: "poor" },
     ],
+  },
+  {
+    key: "debt_relief",
+    headline: "Are you carrying credit card or other debt you'd like help with?",
+    type: "yesno",
+    isOffer: true,
+    category: "Debt relief",
+    offerName: "Debt Relief Options",
   },
   {
     key: "cash_now",
@@ -121,22 +137,41 @@ const EMPTY_PII = {
   phone: "",
 };
 
+// Case/whitespace-insensitive, so a stray capital or space in CMS-authored
+// or MoneyAid-fed category data can't silently break routing.
+function normalizeCategory(value) {
+  return (value || "").trim().toLowerCase();
+}
+
 // Resolves the URL an offer question should open: an article-supplied
-// override (matched by category) takes priority, then the SafeBet
-// default for that category, then the question's own static offerUrl.
-function resolveOfferUrl(question, offerLinks) {
+// override (matched by category) takes priority, then the owned-property
+// SafeBet default for that category, then a live match against MoneyAid's
+// offers feed (for categories with no owned-property default, e.g. "Debt
+// relief"/TurboDebt), then the question's own static offerUrl.
+function resolveOfferUrl(question, offerLinks, moneyAidOffers) {
   if (question.category) {
+    const targetCategory = normalizeCategory(question.category);
+
     const override = (offerLinks || []).find(
-      (offer) => offer.category === question.category && offer.offer_url
+      (offer) => normalizeCategory(offer.category) === targetCategory && offer.offer_url
     );
     if (override) return override.offer_url;
-    return DEFAULT_OFFER_URLS[question.category] || question.offerUrl || null;
+
+    if (DEFAULT_OFFER_URLS[question.category]) return DEFAULT_OFFER_URLS[question.category];
+
+    const moneyAidMatch = (moneyAidOffers || []).find(
+      (offer) => normalizeCategory(offer.category) === targetCategory && offer.url
+    );
+    if (moneyAidMatch) return moneyAidMatch.url;
+
+    return question.offerUrl || null;
   }
   return question.offerUrl || null;
 }
 
 export default function CoRegFunnel({ offerLinks = [] }) {
   const [step, setStep] = useState("email"); // email | pii | survey | complete
+  const [moneyAidOffers, setMoneyAidOffers] = useState([]);
   const [email, setEmail] = useState("");
   const [pii, setPii] = useState(EMPTY_PII);
   const [website, setWebsite] = useState("");
@@ -150,6 +185,30 @@ export default function CoRegFunnel({ offerLinks = [] }) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const hasSentMatchEmail = useRef(false);
+
+  // Fetched once on mount, independent of the funnel's own step/lead flow —
+  // silently empty on failure, same as OfferCarousel.js's fetch of the same
+  // endpoint, so a MoneyAid outage just falls through to question.offerUrl.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMoneyAidOffers() {
+      try {
+        const res = await fetch(OFFERS_API_URL);
+        const data = await res.json();
+        if (!cancelled && res.ok && data?.success && Array.isArray(data.offers)) {
+          setMoneyAidOffers(data.offers);
+        }
+      } catch (err) {
+        console.warn("Could not fetch offers from MoneyAid Ops:", err);
+      }
+    }
+
+    loadMoneyAidOffers();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Fires once, after the funnel reaches "complete", without blocking the
   // completion screen from rendering.
@@ -238,7 +297,7 @@ export default function CoRegFunnel({ offerLinks = [] }) {
   };
 
   const handleOfferYes = (question) => {
-    const resolvedUrl = resolveOfferUrl(question, offerLinks);
+    const resolvedUrl = resolveOfferUrl(question, offerLinks, moneyAidOffers);
     // Must fire synchronously (before any await) or browsers block the popup.
     if (resolvedUrl) {
       window.open(resolvedUrl, "_blank", "noopener,noreferrer");
