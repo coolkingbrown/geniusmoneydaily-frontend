@@ -7,8 +7,7 @@ export const metadata = {
 };
 
 const PARTNERS = [
-  "Debthunch",
-  "Debt Republic",
+  "TurboDebt",
   "Loanhunch",
   "SafeBetLoans",
   "SafeBetAuto",

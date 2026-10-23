@@ -5,9 +5,7 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { calcPayoffMonths, formatCurrency, formatMonths } from "@/lib/calculators";
-import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
-
-const TOOL_SLUG = "credit-card-payoff-calculator";
+import { buildPhonexaLink } from "@/lib/phonexaLink";
 
 // Reference rate used purely for the "what a fixed consolidation loan would
 // cost instead" comparison, shown clearly in the UI.
@@ -17,7 +15,7 @@ const CONSOLIDATION_APR = 12.99;
 // the consolidation-loan CTA.
 const DEBT_RELIEF_THRESHOLD = 10000;
 
-export default function CreditCardPayoffCalculator({ initialValues = {} }) {
+export default function CreditCardPayoffCalculator({ initialValues = {}, articleSlug }) {
   const [balance, setBalance] = useState(initialValues.balance ?? 8000);
   const [apr, setApr] = useState(initialValues.apr ?? 22.99);
   const [payment, setPayment] = useState(initialValues.payment ?? 250);
@@ -40,6 +38,7 @@ export default function CreditCardPayoffCalculator({ initialValues = {} }) {
   }, [balance, apr, payment]);
 
   const showDebtReliefCta = (Number(balance) || 0) >= DEBT_RELIEF_THRESHOLD;
+  const contextLabel = articleSlug ? `GMD_${articleSlug}` : "GMD_CardPayoff";
 
   return (
     <div className="space-y-8">
@@ -78,13 +77,13 @@ export default function CreditCardPayoffCalculator({ initialValues = {} }) {
 
       <div className="flex flex-col sm:flex-row gap-3">
         <CalcCTA
-          href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LOANS, TOOL_SLUG)}
+          href={buildPhonexaLink(contextLabel, "primary")}
           label="Lower My Credit Card APR →"
         />
         {showDebtReliefCta && (
           <CalcCTA
-            href={buildMoneyAidLink(OFFER_SLUGS.DEBTHUNCH, TOOL_SLUG)}
-            label="Explore Debt Relief Options →"
+            href={buildPhonexaLink(contextLabel, "secondary")}
+            label="See Debt Relief Options"
             variant="secondary"
           />
         )}

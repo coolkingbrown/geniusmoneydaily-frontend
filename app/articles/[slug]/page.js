@@ -149,7 +149,7 @@ export default async function BlogArticlePage({ params }) {
               </div>
             )}
 
-            <ArticleBody html={article.body_content} video={video} />
+            <ArticleBody html={article.body_content} video={video} articleSlug={article.slug} />
 
             <ArticleDisclaimer sources={article.sources} disclaimerNote={article.disclaimer_note} />
 

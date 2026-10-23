@@ -56,11 +56,16 @@ const SANITIZE_OPTIONS = {
   allowedSchemes: ["http", "https", "mailto"],
 };
 
-function renderToolEmbedSegments(html, keyPrefix) {
+function renderToolEmbedSegments(html, keyPrefix, articleSlug) {
   const segments = splitHtmlWithToolEmbeds(html);
   return segments.map((segment, i) =>
     segment.type === "tool" ? (
-      <EmbeddedTool key={`${keyPrefix}-tool-${i}`} slug={segment.slug} rawParams={segment.rawParams} />
+      <EmbeddedTool
+        key={`${keyPrefix}-tool-${i}`}
+        slug={segment.slug}
+        rawParams={segment.rawParams}
+        articleSlug={articleSlug}
+      />
     ) : (
       <div key={`${keyPrefix}-html-${i}`} dangerouslySetInnerHTML={{ __html: segment.content }} />
     )
@@ -73,29 +78,29 @@ function renderToolEmbedSegments(html, keyPrefix) {
 // or when no Quick Answer section is found, rendering is identical to the
 // no-video case — a single pass through the tool-embed splitter, same as
 // before this feature existed.
-export default function ArticleBody({ html, video }) {
+export default function ArticleBody({ html, video, articleSlug }) {
   const clean = enhanceTables(sanitizeHtml(html || "", SANITIZE_OPTIONS));
 
   if (!video) {
-    return <div className="article-body">{renderToolEmbedSegments(clean, "body")}</div>;
+    return <div className="article-body">{renderToolEmbedSegments(clean, "body", articleSlug)}</div>;
   }
 
   const { before, after, found } = splitAfterQuickAnswer(clean);
 
   if (!found) {
-    return <div className="article-body">{renderToolEmbedSegments(clean, "body")}</div>;
+    return <div className="article-body">{renderToolEmbedSegments(clean, "body", articleSlug)}</div>;
   }
 
   return (
     <div className="article-body">
-      {renderToolEmbedSegments(before, "before")}
+      {renderToolEmbedSegments(before, "before", articleSlug)}
       <ArticleVideoCard
         youtubeId={video.youtubeId}
         mp4Url={video.mp4Url}
         posterUrl={video.posterUrl}
         title={video.title}
       />
-      {renderToolEmbedSegments(after, "after")}
+      {renderToolEmbedSegments(after, "after", articleSlug)}
     </div>
   );
 }
