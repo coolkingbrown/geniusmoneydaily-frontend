@@ -184,7 +184,7 @@ export default async function BlogArticlePage({ params }) {
               </div>
             )}
 
-            <ArticleBody html={article.body_content} video={video} />
+            <ArticleBody html={article.body_content} video={video} articleSlug={article.slug} />
 
             {/* Sources stay in their normal spot for every article; the
                 disclaimer *note* is suppressed here for guest articles —
