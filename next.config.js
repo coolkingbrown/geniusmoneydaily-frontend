@@ -14,6 +14,13 @@ const nextConfig = {
         destination: "https://www.postprogo.com/s/gmd/:code",
         permanent: false,
       },
+      {
+        // Savings category renamed to Investing (lib/verticals.js) — a true
+        // 301 since this is a permanent rename, not /s/:code's repointable case.
+        source: "/articles/category/savings",
+        destination: "/articles/category/investing",
+        statusCode: 301,
+      },
     ];
   },
   images: {

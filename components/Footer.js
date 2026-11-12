@@ -67,8 +67,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/articles/category/savings" className="hover:text-white transition-colors">
-                  High-Yield Savings
+                <Link href="/articles/category/investing" className="hover:text-white transition-colors">
+                  Investing & Wealth Building
                 </Link>
               </li>
               <li>

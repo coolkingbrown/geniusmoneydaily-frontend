@@ -20,7 +20,7 @@ export const metadata = {
 const CATEGORIES = [
   { name: "Loans", href: "/articles/category/loans" },
   { name: "Credit", href: "/articles/category/credit" },
-  { name: "Savings", href: "/articles/category/savings" },
+  { name: "Investing", href: "/articles/category/investing" },
   { name: "Real Estate", href: "/articles/category/real-estate" },
   { name: "Taxes", href: "/articles/category/taxes" },
   { name: "Lifestyle", href: "/articles/category/lifestyle" },

@@ -13,7 +13,7 @@ export const metadata = {
 const VERTICALS = [
   { label: "Loans", slug: "loans" },
   { label: "Credit", slug: "credit" },
-  { label: "Savings", slug: "savings" },
+  { label: "Investing", slug: "investing" },
   { label: "Real Estate", slug: "real-estate" },
   { label: "Taxes", slug: "taxes" },
   { label: "Lifestyle", slug: "lifestyle" },
