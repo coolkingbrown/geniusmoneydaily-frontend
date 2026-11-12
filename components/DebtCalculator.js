@@ -5,11 +5,9 @@ import CalcInput from "@/components/calculators/CalcInput";
 import CalcResult from "@/components/calculators/CalcResult";
 import CalcCTA from "@/components/calculators/CalcCTA";
 import { calcMonthlyPayment, formatCurrency } from "@/lib/calculators";
-import { buildMoneyAidLink, OFFER_SLUGS } from "@/lib/moneyAid";
+import { buildPhonexaLink } from "@/lib/phonexaLink";
 
-const TOOL_SLUG = "debt-consolidation-calculator";
-
-export default function DebtCalculator({ initialValues = {} }) {
+export default function DebtCalculator({ initialValues = {}, articleSlug }) {
   const [totalDebt, setTotalDebt] = useState(initialValues.amount ?? 20000);
   const [cardApr, setCardApr] = useState(initialValues.cardApr ?? 24.99);
   const [loanApr, setLoanApr] = useState(initialValues.loanApr ?? 13.99);
@@ -54,8 +52,8 @@ export default function DebtCalculator({ initialValues = {} }) {
       </p>
 
       <CalcCTA
-        href={buildMoneyAidLink(OFFER_SLUGS.SAFE_BET_LOANS, TOOL_SLUG)}
-        label="See Consolidation Loan Offers →"
+        href={buildPhonexaLink(articleSlug ? `GMD_${articleSlug}` : "GMD_DebtConsolidation")}
+        label="See Consolidation Loan Offers"
       />
     </div>
   );

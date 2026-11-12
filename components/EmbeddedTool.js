@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { getToolConfig } from "@/lib/toolsConfig";
 import { parseToolParams } from "@/lib/toolParams";
 
-export default function EmbeddedTool({ slug, rawParams }) {
+export default function EmbeddedTool({ slug, rawParams, articleSlug }) {
   const tool = getToolConfig(slug);
   if (!tool) return null; // Unknown slug: render nothing, no broken UI.
 
@@ -24,7 +24,7 @@ export default function EmbeddedTool({ slug, rawParams }) {
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
-      <ToolComponent initialValues={initialValues} />
+      <ToolComponent initialValues={initialValues} articleSlug={articleSlug} />
     </div>
   );
 }
