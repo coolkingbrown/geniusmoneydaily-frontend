@@ -1,23 +1,7 @@
-import sanitizeHtml from "sanitize-html";
 import AuthorAvatar from "@/components/AuthorAvatar";
 import GuestAuthorCTA from "@/components/GuestAuthorCTA";
 
 const NOTE_CLASS = "text-xs text-slate-500 italic leading-relaxed";
-
-// frame_disclosures' `html` field (before_you_decide) is MoneyAid-authored
-// content living outside body_content, so it still gets sanitized before
-// dangerouslySetInnerHTML, same discipline as body_content itself.
-function sanitizeFrameHtml(html) {
-  return sanitizeHtml(html || "", {
-    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["h3", "h4"]),
-    allowedAttributes: {
-      ...sanitizeHtml.defaults.allowedAttributes,
-      a: ["href", "name", "target", "rel"],
-      "*": ["class"],
-    },
-    allowedSchemes: ["http", "https", "mailto"],
-  });
-}
 
 function originallyPublishedLabel(item) {
   if (item.text) return item.text;
@@ -39,17 +23,6 @@ function FrameDisclosureItem({ item }) {
     case "tax_relief_note":
     case "not_advice":
       return item.text ? <p className={NOTE_CLASS}>{item.text}</p> : null;
-
-    case "before_you_decide": {
-      const clean = sanitizeFrameHtml(item.html);
-      if (!clean) return null;
-      return (
-        <div
-          className="mai-before-you-decide bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm text-slate-600"
-          dangerouslySetInnerHTML={{ __html: clean }}
-        />
-      );
-    }
 
     case "cta":
       return <GuestAuthorCTA href={item.href} label={item.text} />;
